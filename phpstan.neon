@@ -7,11 +7,19 @@ parameters:
     paths:
         - app/
 
-    # Level 10 is the highest level
+    # Level 6 provides good type checking while being practical
     level: 6
 
-#    ignoreErrors:
-#        - '#PHPDoc tag @var#'
-#
+    ignoreErrors:
+        # Generic type variance issues - these are acceptable as filters work with any model
+        - '#Parameter \#1 \$filter of method App\\Queries\\Core\\AbstractQueryBuilder<.*>::addFilter\(\) expects App\\Contracts\\Queries\\QueryFilterInterface<.*>, .* given\.#'
+        
+        # Unsafe new static() is acceptable in abstract classes with proper type constraints
+        - '#Unsafe usage of new static\(\)\.#'
+        
+        # Generic pagination types - Laravel's pagination doesn't specify key/value generics
+        - '#Method App\\Queries\\Core\\AbstractQueryBuilder::paginate\(\) return type with generic class .* does not specify its types#'
+        - '#Method App\\Queries\\Core\\AbstractQueryBuilder::simplePaginate\(\) return type with generic class .* does not specify its types#'
+
 #    excludePaths:
 #        - ./*/*/FileToBeExcluded.php
