@@ -39,8 +39,6 @@ final class VerifiedFilter extends AbstractQueryFilter
 
     /**
      * Get a unique identifier for this filter.
-     *
-     * @return string
      */
     public function getIdentifier(): string
     {
@@ -49,8 +47,6 @@ final class VerifiedFilter extends AbstractQueryFilter
 
     /**
      * Get the priority of this filter.
-     *
-     * @return int
      */
     public function getPriority(): int
     {

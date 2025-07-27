@@ -53,8 +53,6 @@ final class SearchFilter extends AbstractQueryFilter
 
     /**
      * Get a unique identifier for this filter.
-     *
-     * @return string
      */
     public function getIdentifier(): string
     {
@@ -63,8 +61,6 @@ final class SearchFilter extends AbstractQueryFilter
 
     /**
      * Determine if this filter should be applied.
-     *
-     * @return bool
      */
     public function shouldApply(): bool
     {
@@ -75,8 +71,6 @@ final class SearchFilter extends AbstractQueryFilter
      * Get the priority of this filter.
      *
      * Search filters typically have higher priority to be applied early.
-     *
-     * @return int
      */
     public function getPriority(): int
     {

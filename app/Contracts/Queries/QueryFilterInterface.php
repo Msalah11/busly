@@ -18,6 +18,7 @@ interface QueryFilterInterface
      * Apply the filter to the given query builder.
      *
      * @param  Builder<TModel>  $query  The query builder to modify
+     * @return Builder<TModel> The modified query builder
      */
     public function apply(Builder $query): Builder;
 

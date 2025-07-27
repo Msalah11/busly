@@ -61,8 +61,6 @@ final class DateRangeFilter extends AbstractQueryFilter
 
     /**
      * Get a unique identifier for this filter.
-     *
-     * @return string
      */
     public function getIdentifier(): string
     {
@@ -71,8 +69,6 @@ final class DateRangeFilter extends AbstractQueryFilter
 
     /**
      * Determine if this filter should be applied.
-     *
-     * @return bool
      */
     public function shouldApply(): bool
     {
@@ -83,8 +79,6 @@ final class DateRangeFilter extends AbstractQueryFilter
      * Get the priority of this filter.
      *
      * Date filters typically have medium priority.
-     *
-     * @return int
      */
     public function getPriority(): int
     {
@@ -110,9 +104,6 @@ final class DateRangeFilter extends AbstractQueryFilter
 
     /**
      * Normalize a date input to a Carbon instance.
-     *
-     * @param  CarbonInterface|string  $date
-     * @return Carbon
      */
     private function normalizeDate(CarbonInterface|string $date): Carbon
     {

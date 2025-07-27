@@ -44,8 +44,6 @@ final class LimitModifier extends AbstractQueryFilter
 
     /**
      * Get a unique identifier for this modifier.
-     *
-     * @return string
      */
     public function getIdentifier(): string
     {
@@ -54,8 +52,6 @@ final class LimitModifier extends AbstractQueryFilter
 
     /**
      * Get the priority of this modifier.
-     *
-     * @return int
      */
     public function getPriority(): int
     {
