@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTOs\Settings;
 
+use App\Enums\Role;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,7 @@ final readonly class ProfileUpdateData
     public function __construct(
         public string $name,
         public string $email,
+        public ?Role $role = null,
     ) {}
 
     /**
@@ -25,22 +27,36 @@ final readonly class ProfileUpdateData
      */
     public static function fromRequest(ProfileUpdateRequest|Request $request): self
     {
+        $role = null;
+
+        // Allow role assignment if provided and user is admin
+        if ($request->has('role') && $request->user()?->isAdmin()) {
+            $role = Role::from($request->string('role')->toString());
+        }
+
         return new self(
             name: $request->string('name')->toString(),
             email: strtolower($request->string('email')->toString()),
+            role: $role,
         );
     }
 
     /**
      * Convert to array for user update.
      *
-     * @return array<string, string>
+     * @return array<string, string|Role>
      */
     public function toArray(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
             'email' => $this->email,
         ];
+
+        if ($this->role instanceof \App\Enums\Role) {
+            $data['role'] = $this->role;
+        }
+
+        return $data;
     }
 }

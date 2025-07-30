@@ -29,7 +29,7 @@ class RegisteredUserController extends Controller
     public function store(RegisterRequest $request, RegisterUserAction $action): RedirectResponse
     {
         $registerData = $request->toDTO();
-        
+
         $action->execute($registerData);
 
         return redirect()->intended(route('dashboard', absolute: false));

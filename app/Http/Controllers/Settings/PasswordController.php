@@ -34,7 +34,7 @@ class PasswordController extends Controller
         ]);
 
         $passwordData = PasswordUpdateData::fromRequest($request);
-        
+
         $action->execute($request->user(), $passwordData);
 
         return back();

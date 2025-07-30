@@ -34,7 +34,7 @@ class NewPasswordController extends Controller
     public function store(PasswordResetRequest $request, ResetPasswordAction $action): RedirectResponse
     {
         $passwordResetData = $request->toDTO();
-        
+
         $action->execute($passwordResetData);
 
         return to_route('login')->with('status', __(Password::PasswordReset));

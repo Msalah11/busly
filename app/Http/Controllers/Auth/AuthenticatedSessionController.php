@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request, LoginUserAction $action): RedirectResponse
     {
         $loginData = LoginData::fromRequest($request);
-        
+
         $action->execute($loginData, $request);
 
         return redirect()->intended(route('dashboard', absolute: false));
