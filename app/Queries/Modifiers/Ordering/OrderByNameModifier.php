@@ -48,34 +48,4 @@ final class OrderByNameModifier extends AbstractQueryFilter
     {
         return $query->orderBy('name', $this->direction);
     }
-
-    /**
-     * Get a unique identifier for this modifier.
-     */
-    public function getIdentifier(): string
-    {
-        return 'order_by_name_'.strtolower($this->direction);
-    }
-
-    /**
-     * Get the priority of this modifier.
-     */
-    public function getPriority(): int
-    {
-        return 50;
-    }
-
-    /**
-     * Get metadata about this modifier.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
-    {
-        return array_merge(parent::getMetadata(), [
-            'direction' => $this->direction,
-            'column' => 'name',
-            'type' => 'ordering_modifier',
-        ]);
-    }
 }

@@ -48,34 +48,4 @@ final class OrderByCreatedModifier extends AbstractQueryFilter
     {
         return $query->orderBy('created_at', $this->direction);
     }
-
-    /**
-     * Get a unique identifier for this modifier.
-     */
-    public function getIdentifier(): string
-    {
-        return 'order_by_created_'.strtolower($this->direction);
-    }
-
-    /**
-     * Get the priority of this modifier.
-     */
-    public function getPriority(): int
-    {
-        return 50;
-    }
-
-    /**
-     * Get metadata about this modifier.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
-    {
-        return array_merge(parent::getMetadata(), [
-            'direction' => $this->direction,
-            'column' => 'created_at',
-            'type' => 'ordering_modifier',
-        ]);
-    }
 }

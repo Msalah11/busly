@@ -41,33 +41,4 @@ final class LimitModifier extends AbstractQueryFilter
     {
         return $query->limit($this->limit);
     }
-
-    /**
-     * Get a unique identifier for this modifier.
-     */
-    public function getIdentifier(): string
-    {
-        return 'limit_'.$this->limit;
-    }
-
-    /**
-     * Get the priority of this modifier.
-     */
-    public function getPriority(): int
-    {
-        return 20;
-    }
-
-    /**
-     * Get metadata about this modifier.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
-    {
-        return array_merge(parent::getMetadata(), [
-            'limit' => $this->limit,
-            'type' => 'limiting_modifier',
-        ]);
-    }
 }

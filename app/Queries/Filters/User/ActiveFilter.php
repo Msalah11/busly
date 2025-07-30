@@ -44,35 +44,4 @@ final class ActiveFilter extends AbstractQueryFilter
 
         return $query;
     }
-
-    /**
-     * Get a unique identifier for this filter.
-     */
-    public function getIdentifier(): string
-    {
-        return sprintf('active_users_%ddays_verified_', $this->daysBack).($this->requireVerified ? 'true' : 'false');
-    }
-
-    /**
-     * Get the priority of this filter.
-     */
-    public function getPriority(): int
-    {
-        return 130;
-    }
-
-    /**
-     * Get metadata about this filter.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
-    {
-        return array_merge(parent::getMetadata(), [
-            'days_back' => $this->daysBack,
-            'require_verified' => $this->requireVerified,
-            'cutoff_date' => now()->subDays($this->daysBack)->toDateString(),
-            'filter_type' => 'composite_active_users',
-        ]);
-    }
 }

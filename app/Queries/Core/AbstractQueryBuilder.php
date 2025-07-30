@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 /**
@@ -21,9 +20,9 @@ use InvalidArgumentException;
 abstract class AbstractQueryBuilder
 {
     /**
-     * The filters to be applied to the query, indexed by identifier.
+     * The filters to be applied to the query.
      *
-     * @var array<string, QueryFilterInterface<TModel>>
+     * @var array<QueryFilterInterface<TModel>>
      */
     protected array $filters = [];
 
@@ -36,11 +35,6 @@ abstract class AbstractQueryBuilder
      * The default pagination size.
      */
     protected const DEFAULT_PER_PAGE = 15;
-
-    /**
-     * Whether to enable query logging for debugging.
-     */
-    protected bool $enableQueryLogging = false;
 
     /**
      * @param  class-string<TModel>  $modelClass  The model class name
@@ -69,18 +63,10 @@ abstract class AbstractQueryBuilder
      *
      * @param  QueryFilterInterface<TModel>  $filter
      * @return $this
-     *
-     * @throws InvalidArgumentException If a filter with the same identifier already exists
      */
     final public function addFilter(QueryFilterInterface $filter): self
     {
-        $identifier = $filter->getIdentifier();
-
-        if (isset($this->filters[$identifier])) {
-            throw new InvalidArgumentException(sprintf("Filter with identifier '%s' already exists", $identifier));
-        }
-
-        $this->filters[$identifier] = $filter;
+        $this->filters[] = $filter;
 
         return $this;
     }
@@ -122,21 +108,9 @@ abstract class AbstractQueryBuilder
         /** @var Builder<TModel> $query */
         $query = $this->modelClass::query()->select($this->columns);
 
-        // Sort filters by priority (higher priority first)
-        $sortedFilters = $this->getSortedFilters();
-
-        // Apply each filter that should be applied
-        foreach ($sortedFilters as $filter) {
-            if ($filter->shouldApply()) {
-                if ($this->enableQueryLogging) {
-                    Log::debug('Applying query filter', [
-                        'filter' => $filter->getIdentifier(),
-                        'metadata' => $filter->getMetadata(),
-                    ]);
-                }
-
-                $query = $filter->apply($query);
-            }
+        // Apply each filter
+        foreach ($this->filters as $filter) {
+            $query = $filter->apply($query);
         }
 
         return $query;
@@ -215,31 +189,7 @@ abstract class AbstractQueryBuilder
             'model_class' => $this->modelClass,
             'columns' => $this->columns,
             'filters_count' => count($this->filters),
-            'filters' => array_map(
-                fn (QueryFilterInterface $filter): array => [
-                    'identifier' => $filter->getIdentifier(),
-                    'priority' => $filter->getPriority(),
-                    'should_apply' => $filter->shouldApply(),
-                    'metadata' => $filter->getMetadata(),
-                ],
-                $this->filters
-            ),
-            'query_logging_enabled' => $this->enableQueryLogging,
         ];
-    }
-
-    /**
-     * Sort filters by priority (higher priority first).
-     *
-     * @return array<QueryFilterInterface<TModel>>
-     */
-    private function getSortedFilters(): array
-    {
-        $filters = $this->filters;
-
-        uasort($filters, fn (QueryFilterInterface $a, QueryFilterInterface $b): int => $b->getPriority() <=> $a->getPriority());
-
-        return array_values($filters);
     }
 
     /**

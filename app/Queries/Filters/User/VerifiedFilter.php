@@ -36,33 +36,4 @@ final class VerifiedFilter extends AbstractQueryFilter
             ? $query->whereNotNull('email_verified_at')
             : $query->whereNull('email_verified_at');
     }
-
-    /**
-     * Get a unique identifier for this filter.
-     */
-    public function getIdentifier(): string
-    {
-        return 'email_verified_'.($this->verified ? 'true' : 'false');
-    }
-
-    /**
-     * Get the priority of this filter.
-     */
-    public function getPriority(): int
-    {
-        return 120;
-    }
-
-    /**
-     * Get metadata about this filter.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
-    {
-        return array_merge(parent::getMetadata(), [
-            'verified' => $this->verified,
-            'filter_type' => 'verification_status',
-        ]);
-    }
 }
