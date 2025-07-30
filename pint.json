@@ -1,0 +1,6 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "increment_style": false
+    }
+} 

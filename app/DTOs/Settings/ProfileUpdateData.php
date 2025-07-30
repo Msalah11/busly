@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 /**
  * Data Transfer Object for profile update operations.
  */
-readonly final class ProfileUpdateData
+final readonly class ProfileUpdateData
 {
     /**
      * Create a new ProfileUpdateData instance.
@@ -27,7 +27,7 @@ readonly final class ProfileUpdateData
     {
         return new self(
             name: $request->string('name')->toString(),
-            email: $request->string('email')->toString(),
+            email: strtolower($request->string('email')->toString()),
         );
     }
 

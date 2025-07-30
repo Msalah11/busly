@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 /**
  * Data Transfer Object for user login operations.
  */
-readonly final class LoginData
+final readonly class LoginData
 {
     /**
      * Create a new LoginData instance.
@@ -34,7 +34,7 @@ readonly final class LoginData
     }
 
     /**
-     * Convert to array for authentication credentials.
+     * Convert to array for authentication.
      *
      * @return array<string, string>
      */

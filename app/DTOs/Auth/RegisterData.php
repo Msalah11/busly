@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 /**
  * Data Transfer Object for user registration operations.
  */
-readonly final class RegisterData
+final readonly class RegisterData
 {
     /**
      * Create a new RegisterData instance.
@@ -27,7 +27,7 @@ readonly final class RegisterData
     {
         return new self(
             name: $request->string('name')->toString(),
-            email: $request->string('email')->toString(),
+            email: strtolower($request->string('email')->toString()),
             password: $request->string('password')->toString(),
         );
     }

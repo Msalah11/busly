@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 /**
  * Data Transfer Object for password reset operations.
  */
-readonly final class PasswordResetData
+final readonly class PasswordResetData
 {
     /**
      * Create a new PasswordResetData instance.

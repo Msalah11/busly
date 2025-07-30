@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 /**
  * Data Transfer Object for password update operations.
  */
-readonly final class PasswordUpdateData
+final readonly class PasswordUpdateData
 {
     /**
      * Create a new PasswordUpdateData instance.

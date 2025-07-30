@@ -42,8 +42,6 @@ class LoginRequest extends FormRequest
         return LoginData::fromRequest($this);
     }
 
-
-
     /**
      * Ensure the login request is not rate limited.
      *
