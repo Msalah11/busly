@@ -43,12 +43,15 @@ final class SearchFilter extends AbstractQueryFilter
             return $query;
         }
 
-        $operator = $this->caseSensitive ? 'LIKE' : 'ILIKE';
         $searchValue = sprintf('%%%s%%', $searchTerm);
 
-        return $query->where(function (Builder $subQuery) use ($operator, $searchValue): void {
+        return $query->where(function (Builder $subQuery) use ($searchValue): void {
             foreach ($this->searchColumns as $column) {
-                $subQuery->orWhere($column, $operator, $searchValue);
+                if ($this->caseSensitive) {
+                    $subQuery->orWhere($column, 'LIKE', $searchValue);
+                } else {
+                    $subQuery->orWhereRaw('LOWER('.$column.') LIKE LOWER(?)', [$searchValue]);
+                }
             }
         });
     }
