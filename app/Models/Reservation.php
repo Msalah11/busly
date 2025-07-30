@@ -32,7 +32,7 @@ class Reservation extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'reservation_code',
@@ -77,6 +77,8 @@ class Reservation extends Model
 
     /**
      * Get the user that owns the reservation.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -85,6 +87,8 @@ class Reservation extends Model
 
     /**
      * Get the trip that this reservation belongs to.
+     *
+     * @return BelongsTo<Trip, $this>
      */
     public function trip(): BelongsTo
     {
@@ -93,6 +97,8 @@ class Reservation extends Model
 
     /**
      * Get the seats for this reservation.
+     *
+     * @return HasMany<ReservationSeat, $this>
      */
     public function seats(): HasMany
     {

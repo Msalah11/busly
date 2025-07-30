@@ -30,7 +30,7 @@ class Trip extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'origin',
@@ -56,6 +56,8 @@ class Trip extends Model
 
     /**
      * Get the bus that belongs to this trip.
+     *
+     * @return BelongsTo<Bus, $this>
      */
     public function bus(): BelongsTo
     {
@@ -64,6 +66,8 @@ class Trip extends Model
 
     /**
      * Get all reservations for this trip.
+     *
+     * @return HasMany<Reservation, $this>
      */
     public function reservations(): HasMany
     {
@@ -72,6 +76,8 @@ class Trip extends Model
 
     /**
      * Get reserved seats for this trip through reservations.
+     *
+     * @return HasManyThrough<ReservationSeat, Reservation, $this>
      */
     public function reservedSeats(): HasManyThrough
     {

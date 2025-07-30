@@ -40,7 +40,8 @@ final class DateRangeFilter extends AbstractQueryFilter
      */
     public function apply(Builder $query): Builder
     {
-        if (! $this->shouldApply()) {
+        // Don't apply if no dates are provided
+        if ($this->startDate === null && $this->endDate === null) {
             return $query;
         }
 
@@ -57,49 +58,6 @@ final class DateRangeFilter extends AbstractQueryFilter
         }
 
         return $query;
-    }
-
-    /**
-     * Get a unique identifier for this filter.
-     */
-    public function getIdentifier(): string
-    {
-        return 'date_range_'.$this->column;
-    }
-
-    /**
-     * Determine if this filter should be applied.
-     */
-    public function shouldApply(): bool
-    {
-        return $this->startDate !== null || $this->endDate !== null;
-    }
-
-    /**
-     * Get the priority of this filter.
-     *
-     * Date filters typically have medium priority.
-     */
-    public function getPriority(): int
-    {
-        return 150;
-    }
-
-    /**
-     * Get metadata about this filter.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
-    {
-        return array_merge(parent::getMetadata(), [
-            'column' => $this->column,
-            'start_date' => $this->startDate?->toDateString(),
-            'end_date' => $this->endDate?->toDateString(),
-            'inclusive' => $this->inclusive,
-            'has_start_date' => $this->startDate !== null,
-            'has_end_date' => $this->endDate !== null,
-        ]);
     }
 
     /**

@@ -26,7 +26,7 @@ class Bus extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'bus_code',
@@ -47,6 +47,8 @@ class Bus extends Model
 
     /**
      * Get all trips for this bus.
+     *
+     * @return HasMany<Trip, $this>
      */
     public function trips(): HasMany
     {

@@ -23,7 +23,7 @@ class ReservationSeat extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'reservation_id',
@@ -32,6 +32,8 @@ class ReservationSeat extends Model
 
     /**
      * Get the reservation that this seat belongs to.
+     *
+     * @return BelongsTo<Reservation, $this>
      */
     public function reservation(): BelongsTo
     {

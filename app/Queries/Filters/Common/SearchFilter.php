@@ -36,11 +36,13 @@ final class SearchFilter extends AbstractQueryFilter
      */
     public function apply(Builder $query): Builder
     {
-        if (! $this->shouldApply()) {
+        $searchTerm = trim((string) $this->searchTerm);
+
+        // Don't apply if search term is empty
+        if (in_array($searchTerm, ['', '0'], true)) {
             return $query;
         }
 
-        $searchTerm = trim((string) $this->searchTerm);
         $operator = $this->caseSensitive ? 'LIKE' : 'ILIKE';
         $searchValue = sprintf('%%%s%%', $searchTerm);
 
@@ -49,46 +51,5 @@ final class SearchFilter extends AbstractQueryFilter
                 $subQuery->orWhere($column, $operator, $searchValue);
             }
         });
-    }
-
-    /**
-     * Get a unique identifier for this filter.
-     */
-    public function getIdentifier(): string
-    {
-        return 'search_'.md5(implode(',', $this->searchColumns));
-    }
-
-    /**
-     * Determine if this filter should be applied.
-     */
-    public function shouldApply(): bool
-    {
-        return ! in_array(trim($this->searchTerm ?? ''), ['', '0'], true);
-    }
-
-    /**
-     * Get the priority of this filter.
-     *
-     * Search filters typically have higher priority to be applied early.
-     */
-    public function getPriority(): int
-    {
-        return 200;
-    }
-
-    /**
-     * Get metadata about this filter.
-     *
-     * @return array<string, mixed>
-     */
-    public function getMetadata(): array
-    {
-        return array_merge(parent::getMetadata(), [
-            'search_term' => $this->searchTerm,
-            'search_columns' => $this->searchColumns,
-            'case_sensitive' => $this->caseSensitive,
-            'has_search_term' => ! in_array(trim($this->searchTerm ?? ''), ['', '0'], true),
-        ]);
     }
 }
