@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Settings;
 
+use App\DTOs\Settings\ProfileUpdateData;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -30,5 +31,13 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
         ];
+    }
+
+    /**
+     * Convert the request to a ProfileUpdateData DTO.
+     */
+    public function toDTO(): ProfileUpdateData
+    {
+        return ProfileUpdateData::fromRequest($this);
     }
 }

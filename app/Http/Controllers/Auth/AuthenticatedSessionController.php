@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Auth\LoginUserAction;
+use App\DTOs\Auth\LoginData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -29,11 +31,11 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request, LoginUserAction $action): RedirectResponse
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
+        $loginData = LoginData::fromRequest($request);
+        
+        $action->execute($loginData, $request);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
