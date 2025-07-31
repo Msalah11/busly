@@ -72,12 +72,12 @@ describe('EnsureUserIsAdmin Middleware', function (): void {
         $user = User::factory()->create(['role' => Role::USER]);
 
         $this->actingAs($user)
-            ->get('/admin/dashboard')
+            ->get('/admin')
             ->assertStatus(403);
     });
 
     it('redirects unauthenticated users to login', function (): void {
-        $this->get('/admin/dashboard')
+        $this->get('/admin')
             ->assertRedirect('/login');
     });
 });

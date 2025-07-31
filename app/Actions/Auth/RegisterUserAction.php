@@ -16,19 +16,22 @@ use Illuminate\Support\Facades\Hash;
 final class RegisterUserAction
 {
     /**
-     * Register a new user and log them in.
+     * Register a new user and optionally log them in.
      */
-    public function execute(RegisterData $data): User
+    public function execute(RegisterData $data, bool $autoLogin = true): User
     {
         $user = User::create([
             'name' => $data->name,
             'email' => $data->email,
             'password' => Hash::make($data->password),
+            'role' => $data->role,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        if ($autoLogin) {
+            Auth::login($user);
+        }
 
         return $user;
     }
