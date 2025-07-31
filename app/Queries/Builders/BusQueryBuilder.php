@@ -102,4 +102,12 @@ final class BusQueryBuilder extends AbstractQueryBuilder
 
         return $this;
     }
+
+    /**
+     * Check if a bus has active trips.
+     */
+    public static function hasActiveTrips(Bus $bus): bool
+    {
+        return $bus->trips()->where('is_active', true)->exists();
+    }
 }

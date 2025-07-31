@@ -42,3 +42,27 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Bus {
+    id: number;
+    bus_code: string;
+    capacity: number;
+    type: 'Standard' | 'VIP';
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Trip {
+    id: number;
+    origin: string;
+    destination: string;
+    departure_time: string;
+    arrival_time: string;
+    price: string;
+    bus_id: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    bus?: Bus;
+}

@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search, Shield, Users } from 'lucide-react';
+import { BookOpen, Bus, Folder, LayoutGrid, Menu, Route, Search, Shield, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -34,6 +34,16 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
             title: 'Users Management',
             href: route('admin.users.index'),
             icon: Users,
+        });
+        items.push({
+            title: 'Bus Management',
+            href: route('admin.buses.index'),
+            icon: Bus,
+        });
+        items.push({
+            title: 'Trip Management',
+            href: route('admin.trips.index'),
+            icon: Route,
         });
     }
 

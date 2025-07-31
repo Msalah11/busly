@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Shield, Users } from 'lucide-react';
+import { BookOpen, Bus, Folder, LayoutGrid, Route, Shield, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const getMainNavItems = (isAdmin: boolean): NavItem[] => {
@@ -26,6 +26,16 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
             title: 'Users Management',
             href: route('admin.users.index'),
             icon: Users,
+        });
+        items.push({
+            title: 'Bus Management',
+            href: route('admin.buses.index'),
+            icon: Bus,
+        });
+        items.push({
+            title: 'Trip Management',
+            href: route('admin.trips.index'),
+            icon: Route,
         });
     }
 
