@@ -197,7 +197,7 @@ export default function AdminUsers({ users, filters }: AdminUsersProps) {
                                                                 )}
                                                             </td>
                                                             <td className="p-4 text-sm text-muted-foreground">
-                                                                {new Date(user.created_at).toLocaleDateString()}
+                                                                {new Date(user.created_at).toLocaleDateString('en-EG')}
                                                             </td>
                                                             <td className="p-4 text-right">
                                                                 <DropdownMenu>

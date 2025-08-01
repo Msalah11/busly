@@ -224,7 +224,7 @@ export default function EditUser({ user }: EditUserProps) {
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium">Joined</span>
                                         <span className="text-sm text-muted-foreground">
-                                            {new Date(user.created_at).toLocaleDateString()}
+                                            {new Date(user.created_at).toLocaleDateString('en-EG')}
                                         </span>
                                     </div>
                                 </div>

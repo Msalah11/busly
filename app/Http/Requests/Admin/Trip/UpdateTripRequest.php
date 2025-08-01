@@ -30,12 +30,32 @@ class UpdateTripRequest extends FormRequest
         return [
             'origin' => ['required', 'string', 'max:255'],
             'destination' => ['required', 'string', 'max:255', 'different:origin'],
-            'departure_time' => ['required', 'date'],
-            'arrival_time' => ['required', 'date', 'after:departure_time'],
+            'departure_time' => ['required', 'date_format:H:i'],
+            'arrival_time' => ['required', 'date_format:H:i'],
             'price' => ['required', 'numeric', 'min:0', 'max:9999.99'],
             'bus_id' => ['required', 'integer', 'exists:buses,id'],
             'is_active' => ['nullable', 'boolean'],
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(\Illuminate\Validation\Validator $validator): void
+    {
+        $validator->after(function ($validator): void {
+            $departureTime = $this->input('departure_time');
+            $arrivalTime = $this->input('arrival_time');
+
+            if ($departureTime && $arrivalTime) {
+                $departure = \Carbon\Carbon::createFromFormat('H:i', $departureTime);
+                $arrival = \Carbon\Carbon::createFromFormat('H:i', $arrivalTime);
+
+                if ($arrival->lte($departure)) {
+                    $validator->errors()->add('arrival_time', 'The arrival time must be after the departure time.');
+                }
+            }
+        });
     }
 
     /**

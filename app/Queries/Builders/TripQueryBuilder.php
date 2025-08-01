@@ -150,4 +150,28 @@ final class TripQueryBuilder extends AbstractQueryBuilder
 
         return $this;
     }
+
+    /**
+     * Eager load relationships while maintaining the query builder chain.
+     *
+     * @param  array<int, string>|string  $relations
+     * @return $this
+     */
+    public function with(array|string $relations): self
+    {
+        $this->addFilter(new class($relations) implements \App\Contracts\Queries\QueryFilterInterface
+        {
+            /**
+             * @param  array<int, string>|string  $relations
+             */
+            public function __construct(private readonly array|string $relations) {}
+
+            public function apply(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+            {
+                return $query->with($this->relations);
+            }
+        });
+
+        return $this;
+    }
 }

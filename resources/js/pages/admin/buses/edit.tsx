@@ -191,7 +191,7 @@ export default function EditBus({ bus }: EditBusProps) {
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium">Created</span>
                                         <span className="text-sm text-muted-foreground">
-                                            {new Date(bus.created_at).toLocaleDateString()}
+                                            {new Date(bus.created_at).toLocaleDateString('en-EG')}
                                         </span>
                                     </div>
                                 </div>

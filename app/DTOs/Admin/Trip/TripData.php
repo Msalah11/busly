@@ -27,8 +27,8 @@ final readonly class TripData
         return new self(
             origin: (string) $request->string('origin'),
             destination: (string) $request->string('destination'),
-            departureTime: Carbon::parse((string) $request->string('departure_time')),
-            arrivalTime: Carbon::parse((string) $request->string('arrival_time')),
+            departureTime: Carbon::createFromFormat('H:i', (string) $request->string('departure_time')),
+            arrivalTime: Carbon::createFromFormat('H:i', (string) $request->string('arrival_time')),
             price: (float) (string) $request->string('price'),
             busId: $request->integer('bus_id'),
             isActive: $request->boolean('is_active', true),

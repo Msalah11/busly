@@ -48,7 +48,6 @@ class TripController extends Controller
     {
         $buses = (new BusQueryBuilder(['id', 'bus_code', 'capacity', 'type']))
             ->active()
-            ->orderBy('bus_code')
             ->get();
 
         return Inertia::render('admin/trips/create', [
@@ -75,7 +74,6 @@ class TripController extends Controller
     {
         $buses = (new BusQueryBuilder(['id', 'bus_code', 'capacity', 'type']))
             ->active()
-            ->orderBy('bus_code')
             ->get();
 
         return Inertia::render('admin/trips/edit', [
