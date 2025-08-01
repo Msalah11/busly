@@ -48,11 +48,15 @@ class CreateTripRequest extends FormRequest
             $arrivalTime = $this->input('arrival_time');
 
             if ($departureTime && $arrivalTime) {
-                $departure = \Carbon\Carbon::createFromFormat('H:i', $departureTime);
-                $arrival = \Carbon\Carbon::createFromFormat('H:i', $arrivalTime);
+                try {
+                    $departure = \Carbon\Carbon::createFromFormat('H:i', $departureTime);
+                    $arrival = \Carbon\Carbon::createFromFormat('H:i', $arrivalTime);
 
-                if ($arrival->lte($departure)) {
-                    $validator->errors()->add('arrival_time', 'The arrival time must be after the departure time.');
+                    if ($arrival->lte($departure)) {
+                        $validator->errors()->add('arrival_time', 'The arrival time must be after the departure time.');
+                    }
+                } catch (\Carbon\Exceptions\InvalidFormatException) {
+                    // Time format validation is already handled by the 'date_format:H:i' rule
                 }
             }
         });
