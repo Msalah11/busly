@@ -6,16 +6,26 @@ namespace App\Queries\Core;
 
 use App\Contracts\Queries\QueryFilterInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use InvalidArgumentException;
 
 /**
  * Abstract base class for building complex database queries with filters.
+ * Supports both static and instance method calls.
  *
  * @template TModel of Model
+ *
+ * @method \Illuminate\Pagination\LengthAwarePaginator<int, TModel> paginate(int $perPage = 15, array<int, string> $columns = ['*'], string $pageName = 'page', ?int $page = null)
+ * @method \Illuminate\Pagination\Paginator<int, TModel> simplePaginate(int $perPage = 15, array<int, string> $columns = ['*'], string $pageName = 'page', ?int $page = null)
+ * @method \Illuminate\Database\Eloquent\Collection<int, TModel> get(array<int, string> $columns = ['*'])
+ * @method TModel|null first(array<int, string> $columns = ['*'])
+ * @method static with(array<int, string>|string $relations)
+ * @method static where(string $column, mixed $operator = null, mixed $value = null, string $boolean = 'and')
+ * @method static whereIn(string $column, mixed $values, string $boolean = 'and', bool $not = false)
+ * @method static orderBy(string $column, string $direction = 'asc')
+ * @method static limit(int $value)
+ * @method static skip(int $value)
+ * @method static count(string $columns = '*')
  */
 abstract class AbstractQueryBuilder
 {
@@ -25,6 +35,13 @@ abstract class AbstractQueryBuilder
      * @var array<QueryFilterInterface<TModel>>
      */
     protected array $filters = [];
+
+    /**
+     * Static instance for method chaining.
+     *
+     * @var static|null
+     */
+    protected static ?self $instance = null;
 
     /**
      * The default columns to select if none are specified.
@@ -46,6 +63,54 @@ abstract class AbstractQueryBuilder
     ) {
         $this->validateModelClass();
     }
+
+    /**
+     * Handle static method calls by creating an instance and calling the method.
+     *
+     * @param  array<mixed>  $arguments
+     */
+    public static function __callStatic(string $method, array $arguments): mixed
+    {
+        $instance = new static;
+
+        // If the method exists on the instance, call it
+        if (method_exists($instance, $method)) {
+            return $instance->$method(...$arguments);
+        }
+
+        // If it's a Laravel Builder method, get the builder and call it
+        $builder = $instance->build();
+        if (method_exists($builder, $method)) {
+            return $builder->$method(...$arguments);
+        }
+
+        throw new \BadMethodCallException(sprintf('Method %s does not exist on ', $method).static::class);
+    }
+
+    /**
+     * Handle dynamic method calls - proxy to Laravel Builder if method doesn't exist.
+     *
+     * @param  array<mixed>  $arguments
+     */
+    public function __call(string $method, array $arguments): mixed
+    {
+        // Get the Laravel Builder and call the method on it
+        $builder = $this->build();
+
+        if (method_exists($builder, $method)) {
+            return $builder->$method(...$arguments);
+        }
+
+        throw new \BadMethodCallException(sprintf('Method %s does not exist on ', $method).static::class);
+    }
+
+    /**
+     * Get the model class for this query builder.
+     * Must be implemented by concrete classes.
+     *
+     * @return class-string<TModel>
+     */
+    abstract protected static function getModelClass(): string;
 
     /**
      * Create a new query builder instance for the specified model.
@@ -99,6 +164,22 @@ abstract class AbstractQueryBuilder
     }
 
     /**
+     * Apply a callback when the given condition is true.
+     * This maintains the query builder chain unlike Laravel's when() method.
+     *
+     * @param  mixed  $condition
+     * @param  callable(static): static  $callback
+     */
+    final public function when($condition, callable $callback): static
+    {
+        if ($condition) {
+            return $callback($this);
+        }
+
+        return $this;
+    }
+
+    /**
      * Build the query with all applied filters.
      *
      * @return Builder<TModel>
@@ -114,82 +195,6 @@ abstract class AbstractQueryBuilder
         }
 
         return $query;
-    }
-
-    /**
-     * Execute the query and return all results.
-     *
-     * @return Collection<int, TModel>
-     */
-    final public function get(): Collection
-    {
-        return $this->build()->get();
-    }
-
-    /**
-     * Execute the query and return the first result.
-     *
-     * @return TModel|null
-     */
-    final public function first(): ?Model
-    {
-        return $this->build()->first();
-    }
-
-    /**
-     * Execute the query and return the first result or fail.
-     *
-     * @return TModel
-     *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    final public function firstOrFail(): Model
-    {
-        return $this->build()->firstOrFail();
-    }
-
-    /**
-     * Execute the query and return paginated results.
-     *
-     * @param  array<int, string>  $columns
-     * @return LengthAwarePaginator<TModel>
-     */
-    final public function paginate(
-        int $perPage = self::DEFAULT_PER_PAGE,
-        array $columns = ['*'],
-        string $pageName = 'page',
-        ?int $page = null
-    ): LengthAwarePaginator {
-        return $this->build()->paginate($perPage, $columns, $pageName, $page);
-    }
-
-    /**
-     * Execute the query and return simple paginated results.
-     *
-     * @param  array<int, string>  $columns
-     * @return Paginator<TModel>
-     */
-    final public function simplePaginate(
-        int $perPage = self::DEFAULT_PER_PAGE,
-        array $columns = ['*'],
-        string $pageName = 'page',
-        ?int $page = null
-    ): Paginator {
-        return $this->build()->simplePaginate($perPage, $columns, $pageName, $page);
-    }
-
-    /**
-     * Get debugging information about the query.
-     *
-     * @return array<string, mixed>
-     */
-    final public function getDebugInfo(): array
-    {
-        return [
-            'model_class' => $this->modelClass,
-            'columns' => $this->columns,
-            'filters_count' => count($this->filters),
-        ];
     }
 
     /**

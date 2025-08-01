@@ -30,17 +30,17 @@ final class TripQueryBuilder extends AbstractQueryBuilder
      */
     public function __construct(array $columns = ['*'])
     {
-        parent::__construct(Trip::class, $columns);
+        parent::__construct(self::getModelClass(), $columns);
     }
 
     /**
-     * Create a new TripQueryBuilder instance.
+     * Get the model class for this query builder.
      *
-     * @param  array<int, string>  $columns
+     * @return class-string<Trip>
      */
-    public static function make(array $columns = ['*']): static
+    protected static function getModelClass(): string
     {
-        return new self($columns);
+        return Trip::class;
     }
 
     /**

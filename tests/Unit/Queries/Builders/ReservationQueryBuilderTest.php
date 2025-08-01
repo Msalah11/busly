@@ -22,14 +22,14 @@ it('can be constructed with custom columns', function (): void {
     expect($builder)->toBeInstanceOf(ReservationQueryBuilder::class);
 });
 
-it('can be created using static make method', function (): void {
-    $builder = ReservationQueryBuilder::make();
+it('can be created using constructor', function (): void {
+    $builder = new ReservationQueryBuilder;
 
     expect($builder)->toBeInstanceOf(ReservationQueryBuilder::class);
 });
 
-it('can be created using static make method with custom columns', function (): void {
-    $builder = ReservationQueryBuilder::make(['id', 'reservation_code']);
+it('can be created using constructor with custom columns', function (): void {
+    $builder = new ReservationQueryBuilder(['id', 'reservation_code']);
 
     expect($builder)->toBeInstanceOf(ReservationQueryBuilder::class);
 });
@@ -85,7 +85,7 @@ describe('method chaining', function (): void {
 
     it('upcoming method accepts boolean parameters', function (): void {
         $result1 = $this->builder->upcoming(true);
-        $result2 = ReservationQueryBuilder::make()->upcoming(false);
+        $result2 = (new ReservationQueryBuilder)->upcoming(false);
 
         expect($result1)->toBe($this->builder);
         expect($result2)->toBeInstanceOf(ReservationQueryBuilder::class);
@@ -110,8 +110,8 @@ describe('method chaining', function (): void {
     });
 
     it('orderByCreated method accepts direction parameters', function (): void {
-        $result1 = ReservationQueryBuilder::make()->orderByCreated('asc');
-        $result2 = ReservationQueryBuilder::make()->orderByCreated('desc');
+        $result1 = (new ReservationQueryBuilder)->orderByCreated('asc');
+        $result2 = (new ReservationQueryBuilder)->orderByCreated('desc');
 
         expect($result1)->toBeInstanceOf(ReservationQueryBuilder::class);
         expect($result2)->toBeInstanceOf(ReservationQueryBuilder::class);
@@ -124,7 +124,7 @@ describe('method chaining', function (): void {
     });
 
     it('can chain multiple methods together', function (): void {
-        $result = ReservationQueryBuilder::make()
+        $result = (new ReservationQueryBuilder)
             ->search('RES')
             ->confirmed()
             ->forUser(1)
@@ -134,7 +134,7 @@ describe('method chaining', function (): void {
     });
 
     it('can chain complex method combinations', function (): void {
-        $result = ReservationQueryBuilder::make()
+        $result = (new ReservationQueryBuilder)
             ->search('RES-2024')
             ->withStatus(ReservationStatus::CONFIRMED)
             ->forUser(1)
@@ -149,48 +149,48 @@ describe('method chaining', function (): void {
 describe('parameter validation', function (): void {
     it('search method accepts various parameter combinations', function (): void {
         // Different search terms
-        expect(ReservationQueryBuilder::make()->search('RES-001'))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->search(''))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->search(null))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->search('RES-001'))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->search(''))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->search(null))->toBeInstanceOf(ReservationQueryBuilder::class);
 
         // Different columns
-        expect(ReservationQueryBuilder::make()->search('RES', ['reservation_code']))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->search('RES', ['reservation_code']))->toBeInstanceOf(ReservationQueryBuilder::class);
 
         // Case sensitivity
-        expect(ReservationQueryBuilder::make()->search('res', ['reservation_code'], true))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->search('res', ['reservation_code'], false))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->search('res', ['reservation_code'], true))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->search('res', ['reservation_code'], false))->toBeInstanceOf(ReservationQueryBuilder::class);
     });
 
     it('withStatus method accepts all reservation statuses', function (): void {
-        expect(ReservationQueryBuilder::make()->withStatus(ReservationStatus::CONFIRMED))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->withStatus(ReservationStatus::CANCELLED))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->withStatus(ReservationStatus::CONFIRMED))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->withStatus(ReservationStatus::CANCELLED))->toBeInstanceOf(ReservationQueryBuilder::class);
     });
 
     it('forUser method accepts positive integers', function (): void {
-        expect(ReservationQueryBuilder::make()->forUser(1))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->forUser(100))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->forUser(9999))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->forUser(1))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->forUser(100))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->forUser(9999))->toBeInstanceOf(ReservationQueryBuilder::class);
     });
 
     it('forUser method throws exception for invalid values', function (): void {
-        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => ReservationQueryBuilder::make()->forUser(0))
+        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => (new ReservationQueryBuilder)->forUser(0))
             ->toThrow(InvalidArgumentException::class);
 
-        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => ReservationQueryBuilder::make()->forUser(-1))
+        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => (new ReservationQueryBuilder)->forUser(-1))
             ->toThrow(InvalidArgumentException::class);
     });
 
     it('forTrip method accepts positive integers', function (): void {
-        expect(ReservationQueryBuilder::make()->forTrip(1))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->forTrip(100))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->forTrip(9999))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->forTrip(1))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->forTrip(100))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->forTrip(9999))->toBeInstanceOf(ReservationQueryBuilder::class);
     });
 
     it('forTrip method throws exception for invalid values', function (): void {
-        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => ReservationQueryBuilder::make()->forTrip(0))
+        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => (new ReservationQueryBuilder)->forTrip(0))
             ->toThrow(InvalidArgumentException::class);
 
-        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => ReservationQueryBuilder::make()->forTrip(-1))
+        expect(fn (): \App\Queries\Builders\ReservationQueryBuilder => (new ReservationQueryBuilder)->forTrip(-1))
             ->toThrow(InvalidArgumentException::class);
     });
 
@@ -198,37 +198,37 @@ describe('parameter validation', function (): void {
         $carbon = Carbon::now();
         $string = '2023-01-01';
 
-        expect(ReservationQueryBuilder::make()->reservedBetween($carbon, $carbon))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->reservedBetween($string, $string))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->reservedBetween($carbon, $string))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->reservedBetween($string, $carbon))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->reservedBetween(null, $carbon))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->reservedBetween($carbon, null))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween($carbon, $carbon))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween($string, $string))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween($carbon, $string))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween($string, $carbon))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween(null, $carbon))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween($carbon, null))->toBeInstanceOf(ReservationQueryBuilder::class);
 
         // Inclusive parameter
-        expect(ReservationQueryBuilder::make()->reservedBetween($carbon, $carbon, true))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->reservedBetween($carbon, $carbon, false))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween($carbon, $carbon, true))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->reservedBetween($carbon, $carbon, false))->toBeInstanceOf(ReservationQueryBuilder::class);
     });
 
     it('orderByCreated method accepts valid directions', function (): void {
-        expect(ReservationQueryBuilder::make()->orderByCreated('asc'))->toBeInstanceOf(ReservationQueryBuilder::class);
-        expect(ReservationQueryBuilder::make()->orderByCreated('desc'))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->orderByCreated('asc'))->toBeInstanceOf(ReservationQueryBuilder::class);
+        expect((new ReservationQueryBuilder)->orderByCreated('desc'))->toBeInstanceOf(ReservationQueryBuilder::class);
     });
 });
 
-describe('static factory methods', function (): void {
-    it('make method creates new instances', function (): void {
-        $builder1 = ReservationQueryBuilder::make();
-        $builder2 = ReservationQueryBuilder::make();
+describe('constructor methods', function (): void {
+    it('constructor creates new instances', function (): void {
+        $builder1 = new ReservationQueryBuilder;
+        $builder2 = new ReservationQueryBuilder;
 
         expect($builder1)->toBeInstanceOf(ReservationQueryBuilder::class);
         expect($builder2)->toBeInstanceOf(ReservationQueryBuilder::class);
         expect($builder1)->not->toBe($builder2);
     });
 
-    it('make method with columns creates new instances', function (): void {
-        $builder1 = ReservationQueryBuilder::make(['id', 'reservation_code']);
-        $builder2 = ReservationQueryBuilder::make(['user_id', 'trip_id']);
+    it('constructor with columns creates new instances', function (): void {
+        $builder1 = new ReservationQueryBuilder(['id', 'reservation_code']);
+        $builder2 = new ReservationQueryBuilder(['user_id', 'trip_id']);
 
         expect($builder1)->toBeInstanceOf(ReservationQueryBuilder::class);
         expect($builder2)->toBeInstanceOf(ReservationQueryBuilder::class);
@@ -262,7 +262,7 @@ describe('method existence', function (): void {
             'reservedBetween',
             'orderByCreated',
             'createdToday',
-            'make',
+
         ];
 
         foreach ($expectedMethods as $method) {

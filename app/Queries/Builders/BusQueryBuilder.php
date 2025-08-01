@@ -27,17 +27,17 @@ final class BusQueryBuilder extends AbstractQueryBuilder
      */
     public function __construct(array $columns = ['*'])
     {
-        parent::__construct(Bus::class, $columns);
+        parent::__construct(self::getModelClass(), $columns);
     }
 
     /**
-     * Create a new BusQueryBuilder instance.
+     * Get the model class for this query builder.
      *
-     * @param  array<int, string>  $columns
+     * @return class-string<Bus>
      */
-    public static function make(array $columns = ['*']): static
+    protected static function getModelClass(): string
     {
-        return new self($columns);
+        return Bus::class;
     }
 
     /**

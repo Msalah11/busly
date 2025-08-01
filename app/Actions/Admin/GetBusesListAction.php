@@ -20,26 +20,16 @@ final class GetBusesListAction
      */
     public function execute(AdminBusListData $data): LengthAwarePaginator
     {
-        $query = BusQueryBuilder::make()
-            ->orderByCreated();
-
-        if ($data->hasSearch()) {
-            $query->search($data->search, ['bus_code']);
-        }
-
-        if ($data->hasType()) {
-            $query->ofType($data->type);
-        }
-
-        if ($data->hasActive()) {
-            $query->active($data->active);
-        }
-
-        return $query->paginate(
-            perPage: $data->perPage,
-            columns: ['id', 'bus_code', 'capacity', 'type', 'is_active', 'created_at'],
-            pageName: 'page',
-            page: $data->page
-        )->withQueryString();
+        return (new BusQueryBuilder)
+            ->orderByCreated()
+            ->when($data->hasSearch(), fn ($query): \App\Queries\Builders\BusQueryBuilder => $query->search($data->search, ['bus_code']))
+            ->when($data->hasType(), fn ($query): \App\Queries\Builders\BusQueryBuilder => $query->ofType($data->type))
+            ->when($data->hasActive(), fn ($query): \App\Queries\Builders\BusQueryBuilder => $query->active($data->active))
+            ->paginate(
+                perPage: $data->perPage,
+                columns: ['id', 'bus_code', 'capacity', 'type', 'is_active', 'created_at'],
+                pageName: 'page',
+                page: $data->page
+            );
     }
-} 
+}

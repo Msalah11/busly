@@ -44,4 +44,4 @@ class CreateBusRequest extends FormRequest
     {
         return BusData::fromRequest($this);
     }
-} 
+}

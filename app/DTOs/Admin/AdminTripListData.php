@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace App\DTOs\Admin;
 
-use App\Enums\BusType;
 use Illuminate\Http\Request;
 
 /**
- * DTO for admin bus list parameters.
+ * DTO for admin trip list parameters.
  */
-final readonly class AdminBusListData
+final readonly class AdminTripListData
 {
     public function __construct(
         public ?string $search = null,
-        public ?BusType $type = null,
+        public ?int $busId = null,
         public ?bool $active = null,
         public int $perPage = 15,
         public int $page = 1,
@@ -24,7 +23,7 @@ final readonly class AdminBusListData
     {
         return new self(
             search: $request->string('search')->toString() ?: null,
-            type: $request->has('type') ? BusType::from($request->string('type')->toString()) : null,
+            busId: $request->has('bus_id') ? $request->integer('bus_id') : null,
             active: $request->has('active') ? $request->boolean('active') : null,
             perPage: min(max($request->integer('per_page', 15), 1), 100),
             page: max($request->integer('page', 1), 1),
@@ -33,17 +32,17 @@ final readonly class AdminBusListData
 
     public function hasSearch(): bool
     {
-        return $this->search !== null && $this->search !== '' && $this->search !== '0';
+        return $this->search !== null && $this->search !== '';
     }
 
-    public function hasType(): bool
+    public function hasBusId(): bool
     {
-        return $this->type instanceof BusType;
+        return $this->busId !== null;
     }
 
     public function hasActive(): bool
     {
-        return $this->active === true;
+        return $this->active !== null;
     }
 
     /**
@@ -57,8 +56,8 @@ final readonly class AdminBusListData
             $filters['search'] = $this->search;
         }
 
-        if ($this->hasType()) {
-            $filters['type'] = $this->type;
+        if ($this->hasBusId()) {
+            $filters['bus_id'] = $this->busId;
         }
 
         if ($this->hasActive()) {

@@ -45,4 +45,4 @@ class UpdateBusRequest extends FormRequest
     {
         return BusData::fromRequest($this);
     }
-} 
+}

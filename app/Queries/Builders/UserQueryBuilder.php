@@ -28,17 +28,17 @@ final class UserQueryBuilder extends AbstractQueryBuilder
      */
     public function __construct(array $columns = ['*'])
     {
-        parent::__construct(User::class, $columns);
+        parent::__construct(self::getModelClass(), $columns);
     }
 
     /**
-     * Create a new UserQueryBuilder instance.
+     * Get the model class for this query builder.
      *
-     * @param  array<int, string>  $columns
+     * @return class-string<User>
      */
-    public static function make(array $columns = ['*']): static
+    protected static function getModelClass(): string
     {
-        return new self($columns);
+        return User::class;
     }
 
     /**

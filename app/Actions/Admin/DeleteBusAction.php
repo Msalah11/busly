@@ -26,4 +26,4 @@ final class DeleteBusAction
 
         $bus->delete();
     }
-} 
+}

@@ -17,9 +17,5 @@ parameters:
         # Unsafe new static() is acceptable in abstract classes with proper type constraints
         - '#Unsafe usage of new static\(\)\.#'
         
-        # Generic pagination types - Laravel's pagination doesn't specify key/value generics
-        - '#Method App\\Queries\\Core\\AbstractQueryBuilder::paginate\(\) return type with generic class .* does not specify its types#'
-        - '#Method App\\Queries\\Core\\AbstractQueryBuilder::simplePaginate\(\) return type with generic class .* does not specify its types#'
-
 #    excludePaths:
 #        - ./*/*/FileToBeExcluded.php

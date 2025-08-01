@@ -21,4 +21,4 @@ final class UpdateBusAction
 
         return $bus->fresh();
     }
-} 
+}

@@ -19,4 +19,4 @@ final class CreateBusAction
     {
         return Bus::create($data->toArray());
     }
-} 
+}

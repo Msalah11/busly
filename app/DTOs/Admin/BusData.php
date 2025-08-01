@@ -29,6 +29,9 @@ final readonly class BusData
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -38,4 +41,4 @@ final readonly class BusData
             'is_active' => $this->isActive,
         ];
     }
-} 
+}

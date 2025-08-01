@@ -21,14 +21,14 @@ it('can be constructed with custom columns', function (): void {
     expect($builder)->toBeInstanceOf(UserQueryBuilder::class);
 });
 
-it('can be created using static make method', function (): void {
-    $builder = UserQueryBuilder::make();
+it('can be created using constructor', function (): void {
+    $builder = new UserQueryBuilder;
 
     expect($builder)->toBeInstanceOf(UserQueryBuilder::class);
 });
 
-it('can be created using static make method with custom columns', function (): void {
-    $builder = UserQueryBuilder::make(['id', 'name']);
+it('can be created using constructor with custom columns', function (): void {
+    $builder = new UserQueryBuilder(['id', 'name']);
 
     expect($builder)->toBeInstanceOf(UserQueryBuilder::class);
 });
@@ -54,7 +54,7 @@ describe('method chaining', function (): void {
 
     it('verified method accepts boolean parameters', function (): void {
         $result1 = $this->builder->verified(true);
-        $result2 = UserQueryBuilder::make()->verified(false);
+        $result2 = (new UserQueryBuilder)->verified(false);
 
         expect($result1)->toBe($this->builder);
         expect($result2)->toBeInstanceOf(UserQueryBuilder::class);
@@ -76,18 +76,18 @@ describe('method chaining', function (): void {
         expect($this->builder->createdToday())->toBe($this->builder);
 
         // Create new instances to avoid filter conflicts
-        expect(UserQueryBuilder::make()->createdThisWeek())->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->createdThisMonth())->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdThisWeek())->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdThisMonth())->toBeInstanceOf(UserQueryBuilder::class);
     });
 
     it('ordering methods return self for chaining', function (): void {
         expect($this->builder->orderByName())->toBe($this->builder);
-        expect(UserQueryBuilder::make()->orderByCreated())->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->orderByCreated())->toBeInstanceOf(UserQueryBuilder::class);
     });
 
     it('ordering methods accept direction parameters', function (): void {
-        $result1 = UserQueryBuilder::make()->orderByName('desc');
-        $result2 = UserQueryBuilder::make()->orderByCreated('asc');
+        $result1 = (new UserQueryBuilder)->orderByName('desc');
+        $result2 = (new UserQueryBuilder)->orderByCreated('asc');
 
         expect($result1)->toBeInstanceOf(UserQueryBuilder::class);
         expect($result2)->toBeInstanceOf(UserQueryBuilder::class);
@@ -100,9 +100,9 @@ describe('method chaining', function (): void {
     });
 
     it('active method accepts custom parameters', function (): void {
-        $result1 = UserQueryBuilder::make()->active(7);
-        $result2 = UserQueryBuilder::make()->active(30, false);
-        $result3 = UserQueryBuilder::make()->active(14, true);
+        $result1 = (new UserQueryBuilder)->active(7);
+        $result2 = (new UserQueryBuilder)->active(30, false);
+        $result3 = (new UserQueryBuilder)->active(14, true);
 
         expect($result1)->toBeInstanceOf(UserQueryBuilder::class);
         expect($result2)->toBeInstanceOf(UserQueryBuilder::class);
@@ -110,7 +110,7 @@ describe('method chaining', function (): void {
     });
 
     it('can chain multiple methods together', function (): void {
-        $result = UserQueryBuilder::make()
+        $result = (new UserQueryBuilder)
             ->search('john')
             ->verified(true)
             ->orderByName('asc');
@@ -119,7 +119,7 @@ describe('method chaining', function (): void {
     });
 
     it('can chain complex method combinations', function (): void {
-        $result = UserQueryBuilder::make()
+        $result = (new UserQueryBuilder)
             ->search('admin')
             ->verified(false)
             ->createdThisMonth()
@@ -133,66 +133,66 @@ describe('method chaining', function (): void {
 describe('parameter validation', function (): void {
     it('search method accepts various parameter combinations', function (): void {
         // Different search terms
-        expect(UserQueryBuilder::make()->search('test'))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->search(''))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->search(null))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search('test'))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search(''))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search(null))->toBeInstanceOf(UserQueryBuilder::class);
 
         // Different columns
-        expect(UserQueryBuilder::make()->search('test', ['name']))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->search('test', ['name', 'email']))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->search('test', ['username', 'full_name']))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search('test', ['name']))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search('test', ['name', 'email']))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search('test', ['username', 'full_name']))->toBeInstanceOf(UserQueryBuilder::class);
 
         // Case sensitivity
-        expect(UserQueryBuilder::make()->search('test', ['name'], true))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->search('test', ['name'], false))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search('test', ['name'], true))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->search('test', ['name'], false))->toBeInstanceOf(UserQueryBuilder::class);
     });
 
     it('createdBetween method accepts various date formats', function (): void {
         $carbon = Carbon::now();
         $string = '2023-01-01';
 
-        expect(UserQueryBuilder::make()->createdBetween($carbon, $carbon))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->createdBetween($string, $string))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->createdBetween($carbon, $string))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->createdBetween($string, $carbon))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->createdBetween(null, $carbon))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->createdBetween($carbon, null))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween($carbon, $carbon))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween($string, $string))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween($carbon, $string))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween($string, $carbon))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween(null, $carbon))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween($carbon, null))->toBeInstanceOf(UserQueryBuilder::class);
 
         // Inclusive parameter
-        expect(UserQueryBuilder::make()->createdBetween($carbon, $carbon, true))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->createdBetween($carbon, $carbon, false))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween($carbon, $carbon, true))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->createdBetween($carbon, $carbon, false))->toBeInstanceOf(UserQueryBuilder::class);
     });
 
     it('ordering methods accept valid directions', function (): void {
-        expect(UserQueryBuilder::make()->orderByName('asc'))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->orderByName('desc'))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->orderByCreated('asc'))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->orderByCreated('desc'))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->orderByName('asc'))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->orderByName('desc'))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->orderByCreated('asc'))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->orderByCreated('desc'))->toBeInstanceOf(UserQueryBuilder::class);
     });
 
     it('active method accepts various parameter combinations', function (): void {
-        expect(UserQueryBuilder::make()->active())->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->active(7))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->active(30, true))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->active(30, false))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->active(1, true))->toBeInstanceOf(UserQueryBuilder::class);
-        expect(UserQueryBuilder::make()->active(365, false))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->active())->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->active(7))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->active(30, true))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->active(30, false))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->active(1, true))->toBeInstanceOf(UserQueryBuilder::class);
+        expect((new UserQueryBuilder)->active(365, false))->toBeInstanceOf(UserQueryBuilder::class);
     });
 });
 
-describe('static factory methods', function (): void {
-    it('make method creates new instances', function (): void {
-        $builder1 = UserQueryBuilder::make();
-        $builder2 = UserQueryBuilder::make();
+describe('constructor methods', function (): void {
+    it('constructor creates new instances', function (): void {
+        $builder1 = new UserQueryBuilder;
+        $builder2 = new UserQueryBuilder;
 
         expect($builder1)->toBeInstanceOf(UserQueryBuilder::class);
         expect($builder2)->toBeInstanceOf(UserQueryBuilder::class);
         expect($builder1)->not->toBe($builder2);
     });
 
-    it('make method with columns creates new instances', function (): void {
-        $builder1 = UserQueryBuilder::make(['id', 'name']);
-        $builder2 = UserQueryBuilder::make(['email', 'created_at']);
+    it('constructor with columns creates new instances', function (): void {
+        $builder1 = new UserQueryBuilder(['id', 'name']);
+        $builder2 = new UserQueryBuilder(['email', 'created_at']);
 
         expect($builder1)->toBeInstanceOf(UserQueryBuilder::class);
         expect($builder2)->toBeInstanceOf(UserQueryBuilder::class);
@@ -225,7 +225,6 @@ describe('method existence', function (): void {
             'orderByName',
             'orderByCreated',
             'active',
-            'make',
         ];
 
         foreach ($expectedMethods as $method) {

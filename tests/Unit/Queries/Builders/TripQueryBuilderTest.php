@@ -21,14 +21,14 @@ it('can be constructed with custom columns', function (): void {
     expect($builder)->toBeInstanceOf(TripQueryBuilder::class);
 });
 
-it('can be created using static make method', function (): void {
-    $builder = TripQueryBuilder::make();
+it('can be created using constructor', function (): void {
+    $builder = new TripQueryBuilder;
 
     expect($builder)->toBeInstanceOf(TripQueryBuilder::class);
 });
 
-it('can be created using static make method with custom columns', function (): void {
-    $builder = TripQueryBuilder::make(['id', 'origin']);
+it('can be created using constructor with custom columns', function (): void {
+    $builder = new TripQueryBuilder(['id', 'origin']);
 
     expect($builder)->toBeInstanceOf(TripQueryBuilder::class);
 });
@@ -66,7 +66,7 @@ describe('method chaining', function (): void {
 
     it('active method accepts boolean parameters', function (): void {
         $result1 = $this->builder->active(true);
-        $result2 = TripQueryBuilder::make()->active(false);
+        $result2 = (new TripQueryBuilder)->active(false);
 
         expect($result1)->toBe($this->builder);
         expect($result2)->toBeInstanceOf(TripQueryBuilder::class);
@@ -80,7 +80,7 @@ describe('method chaining', function (): void {
 
     it('upcoming method accepts boolean parameters', function (): void {
         $result1 = $this->builder->upcoming(true);
-        $result2 = TripQueryBuilder::make()->upcoming(false);
+        $result2 = (new TripQueryBuilder)->upcoming(false);
 
         expect($result1)->toBe($this->builder);
         expect($result2)->toBeInstanceOf(TripQueryBuilder::class);
@@ -123,15 +123,15 @@ describe('method chaining', function (): void {
     });
 
     it('orderByDeparture method accepts direction parameters', function (): void {
-        $result1 = TripQueryBuilder::make()->orderByDeparture('asc');
-        $result2 = TripQueryBuilder::make()->orderByDeparture('desc');
+        $result1 = (new TripQueryBuilder)->orderByDeparture('asc');
+        $result2 = (new TripQueryBuilder)->orderByDeparture('desc');
 
         expect($result1)->toBeInstanceOf(TripQueryBuilder::class);
         expect($result2)->toBeInstanceOf(TripQueryBuilder::class);
     });
 
     it('can chain multiple methods together', function (): void {
-        $result = TripQueryBuilder::make()
+        $result = (new TripQueryBuilder)
             ->search('Cairo')
             ->byRoute('Cairo', 'Alexandria')
             ->active(true)
@@ -141,7 +141,7 @@ describe('method chaining', function (): void {
     });
 
     it('can chain complex method combinations', function (): void {
-        $result = TripQueryBuilder::make()
+        $result = (new TripQueryBuilder)
             ->search('Express')
             ->byRoute('Cairo', 'Alexandria')
             ->active(true)
@@ -156,84 +156,84 @@ describe('method chaining', function (): void {
 describe('parameter validation', function (): void {
     it('search method accepts various parameter combinations', function (): void {
         // Different search terms
-        expect(TripQueryBuilder::make()->search('Cairo'))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->search(''))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->search(null))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search('Cairo'))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search(''))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search(null))->toBeInstanceOf(TripQueryBuilder::class);
 
         // Different columns
-        expect(TripQueryBuilder::make()->search('Cairo', ['origin']))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->search('Cairo', ['origin', 'destination']))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search('Cairo', ['origin']))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search('Cairo', ['origin', 'destination']))->toBeInstanceOf(TripQueryBuilder::class);
 
         // Case sensitivity
-        expect(TripQueryBuilder::make()->search('cairo', ['origin'], true))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->search('cairo', ['origin'], false))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search('cairo', ['origin'], true))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search('cairo', ['origin'], false))->toBeInstanceOf(TripQueryBuilder::class);
     });
 
     it('byRoute method accepts various combinations', function (): void {
-        expect(TripQueryBuilder::make()->byRoute('Cairo', 'Alexandria'))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->byRoute('Cairo', null))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->byRoute(null, 'Alexandria'))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->byRoute(null, null))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->byRoute('Cairo', 'Alexandria'))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->byRoute('Cairo', null))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->byRoute(null, 'Alexandria'))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->byRoute(null, null))->toBeInstanceOf(TripQueryBuilder::class);
     });
 
     it('byDepartureDate method accepts various date formats', function (): void {
         $carbon = Carbon::now();
         $string = '2023-01-01';
 
-        expect(TripQueryBuilder::make()->byDepartureDate($carbon))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->byDepartureDate($string))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->byDepartureDate(null))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->byDepartureDate($carbon))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->byDepartureDate($string))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->byDepartureDate(null))->toBeInstanceOf(TripQueryBuilder::class);
     });
 
     it('departureBetween method accepts various date formats', function (): void {
         $carbon = Carbon::now();
         $string = '2023-01-01';
 
-        expect(TripQueryBuilder::make()->departureBetween($carbon, $carbon))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->departureBetween($string, $string))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->departureBetween($carbon, $string))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->departureBetween($string, $carbon))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->departureBetween(null, $carbon))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->departureBetween($carbon, null))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween($carbon, $carbon))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween($string, $string))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween($carbon, $string))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween($string, $carbon))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween(null, $carbon))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween($carbon, null))->toBeInstanceOf(TripQueryBuilder::class);
 
         // Inclusive parameter
-        expect(TripQueryBuilder::make()->departureBetween($carbon, $carbon, true))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->departureBetween($carbon, $carbon, false))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween($carbon, $carbon, true))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->departureBetween($carbon, $carbon, false))->toBeInstanceOf(TripQueryBuilder::class);
     });
 
     it('withAvailableSeats method accepts positive integers', function (): void {
-        expect(TripQueryBuilder::make()->withAvailableSeats(1))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->withAvailableSeats(5))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->withAvailableSeats(50))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->withAvailableSeats(1))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->withAvailableSeats(5))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->withAvailableSeats(50))->toBeInstanceOf(TripQueryBuilder::class);
     });
 
     it('withAvailableSeats method throws exception for invalid values', function (): void {
-        expect(fn (): \App\Queries\Builders\TripQueryBuilder => TripQueryBuilder::make()->withAvailableSeats(0))
+        expect(fn (): \App\Queries\Builders\TripQueryBuilder => (new TripQueryBuilder)->withAvailableSeats(0))
             ->toThrow(InvalidArgumentException::class);
 
-        expect(fn (): \App\Queries\Builders\TripQueryBuilder => TripQueryBuilder::make()->withAvailableSeats(-1))
+        expect(fn (): \App\Queries\Builders\TripQueryBuilder => (new TripQueryBuilder)->withAvailableSeats(-1))
             ->toThrow(InvalidArgumentException::class);
     });
 
     it('orderByDeparture method accepts valid directions', function (): void {
-        expect(TripQueryBuilder::make()->orderByDeparture('asc'))->toBeInstanceOf(TripQueryBuilder::class);
-        expect(TripQueryBuilder::make()->orderByDeparture('desc'))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->orderByDeparture('asc'))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->orderByDeparture('desc'))->toBeInstanceOf(TripQueryBuilder::class);
     });
 });
 
-describe('static factory methods', function (): void {
-    it('make method creates new instances', function (): void {
-        $builder1 = TripQueryBuilder::make();
-        $builder2 = TripQueryBuilder::make();
+describe('constructor methods', function (): void {
+    it('constructor creates new instances', function (): void {
+        $builder1 = new TripQueryBuilder;
+        $builder2 = new TripQueryBuilder;
 
         expect($builder1)->toBeInstanceOf(TripQueryBuilder::class);
         expect($builder2)->toBeInstanceOf(TripQueryBuilder::class);
         expect($builder1)->not->toBe($builder2);
     });
 
-    it('make method with columns creates new instances', function (): void {
-        $builder1 = TripQueryBuilder::make(['id', 'origin']);
-        $builder2 = TripQueryBuilder::make(['destination', 'departure_time']);
+    it('constructor with columns creates new instances', function (): void {
+        $builder1 = new TripQueryBuilder(['id', 'origin']);
+        $builder2 = new TripQueryBuilder(['destination', 'departure_time']);
 
         expect($builder1)->toBeInstanceOf(TripQueryBuilder::class);
         expect($builder2)->toBeInstanceOf(TripQueryBuilder::class);
@@ -265,7 +265,6 @@ describe('method existence', function (): void {
             'departureBetween',
             'withAvailableSeats',
             'orderByDeparture',
-            'make',
         ];
 
         foreach ($expectedMethods as $method) {

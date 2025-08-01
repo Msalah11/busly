@@ -20,16 +20,15 @@ final class GetUsersListAction
      */
     public function execute(AdminUserListData $data): LengthAwarePaginator
     {
-        return UserQueryBuilder::make()
-            ->search($data->search)
+        return (new UserQueryBuilder)
+            ->when($data->search, fn ($query): \App\Queries\Builders\UserQueryBuilder => $query->search($data->search))
             ->orderByCreated()
             ->paginate(
                 perPage: $data->perPage,
                 columns: ['id', 'name', 'email', 'role', 'email_verified_at', 'created_at'],
                 pageName: 'page',
                 page: $data->page
-            )
-            ->withQueryString();
+            );
     }
 
     /**
@@ -39,7 +38,7 @@ final class GetUsersListAction
      */
     public function getDashboardData(): LengthAwarePaginator
     {
-        return UserQueryBuilder::make()
+        return (new UserQueryBuilder)
             ->orderByCreated()
             ->paginate(
                 perPage: 10,

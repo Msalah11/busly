@@ -10,13 +10,13 @@ use App\Actions\Admin\GetBusesListAction;
 use App\Actions\Admin\UpdateBusAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateBusRequest;
-use App\Http\Requests\Admin\UpdateBusRequest;
 use App\Http\Requests\Admin\IndexBusRequest;
+use App\Http\Requests\Admin\UpdateBusRequest;
 use App\Models\Bus;
 use Illuminate\Http\RedirectResponse;
-use InvalidArgumentException;
 use Inertia\Inertia;
 use Inertia\Response;
+use InvalidArgumentException;
 
 /**
  * Controller for admin bus management operations.
@@ -93,9 +93,9 @@ class BusController extends Controller
 
             return redirect()->route('admin.buses.index')
                 ->with('success', 'Bus deleted successfully.');
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $invalidArgumentException) {
             return redirect()->route('admin.buses.index')
-                ->with('error', $e->getMessage());
+                ->with('error', $invalidArgumentException->getMessage());
         }
     }
-} 
+}
