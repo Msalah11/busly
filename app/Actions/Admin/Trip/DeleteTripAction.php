@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Admin;
+namespace App\Actions\Admin\Trip;
 
 use App\Models\Trip;
 

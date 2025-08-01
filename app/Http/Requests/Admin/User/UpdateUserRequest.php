@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\User;
 
 use App\DTOs\Settings\ProfileUpdateData;
 use App\Enums\Role;
@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 /**
  * Request class for admin user updates.
  */
-class AdminUserUpdateRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

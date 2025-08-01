@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\Bus;
 
-use App\DTOs\Admin\BusData;
+use App\DTOs\Admin\Bus\BusData;
 use App\Enums\BusType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

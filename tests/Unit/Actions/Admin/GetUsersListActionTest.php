@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Actions\Admin\GetUsersListAction;
-use App\DTOs\Admin\AdminUserListData;
+use App\Actions\Admin\User\GetUsersListAction;
+use App\DTOs\Admin\User\AdminUserListData;
 use App\Enums\Role;
 use App\Models\User;
 

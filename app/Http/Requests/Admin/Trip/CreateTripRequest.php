@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\Trip;
 
-use App\DTOs\Admin\TripData;
+use App\DTOs\Admin\Trip\TripData;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Request class for admin trip updates.
+ * Request class for admin trip creation.
  */
-class AdminTripUpdateRequest extends FormRequest
+class CreateTripRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,7 +30,7 @@ class AdminTripUpdateRequest extends FormRequest
         return [
             'origin' => ['required', 'string', 'max:255'],
             'destination' => ['required', 'string', 'max:255', 'different:origin'],
-            'departure_time' => ['required', 'date'],
+            'departure_time' => ['required', 'date', 'after:now'],
             'arrival_time' => ['required', 'date', 'after:departure_time'],
             'price' => ['required', 'numeric', 'min:0', 'max:9999.99'],
             'bus_id' => ['required', 'integer', 'exists:buses,id'],

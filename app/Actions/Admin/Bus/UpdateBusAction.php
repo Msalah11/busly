@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Admin;
+namespace App\Actions\Admin\Bus;
 
-use App\DTOs\Admin\BusData;
+use App\DTOs\Admin\Bus\BusData;
 use App\Models\Bus;
 
 /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\User;
 
 use App\DTOs\Auth\RegisterData;
 use App\Enums\Role;
@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 /**
  * Request class for admin user creation.
  */
-class AdminUserCreateRequest extends FormRequest
+class CreateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

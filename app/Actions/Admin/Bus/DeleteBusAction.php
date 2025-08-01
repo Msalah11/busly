@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Admin;
+namespace App\Actions\Admin\Bus;
 
 use App\Models\Bus;
 use App\Queries\Builders\BusQueryBuilder;

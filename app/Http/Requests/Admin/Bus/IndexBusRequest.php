@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\Bus;
 
-use App\DTOs\Admin\AdminTripListData;
+use App\DTOs\Admin\Bus\AdminBusListData;
+use App\Enums\BusType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
- * Request class for admin trip listing.
+ * Request class for admin bus listing.
  */
-class AdminTripsRequest extends FormRequest
+class IndexBusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +31,7 @@ class AdminTripsRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:255'],
-            'bus_id' => ['nullable', 'integer', 'exists:buses,id'],
+            'type' => ['nullable', 'string', Rule::enum(BusType::class)],
             'active' => ['nullable', 'boolean'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
             'page' => ['nullable', 'integer', 'min:1'],
@@ -37,10 +39,10 @@ class AdminTripsRequest extends FormRequest
     }
 
     /**
-     * Convert the request data to an AdminTripListData DTO.
+     * Convert the request data to an AdminBusListData DTO.
      */
-    public function toDTO(): AdminTripListData
+    public function toDTO(): AdminBusListData
     {
-        return AdminTripListData::fromRequest($this);
+        return AdminBusListData::fromRequest($this);
     }
 }

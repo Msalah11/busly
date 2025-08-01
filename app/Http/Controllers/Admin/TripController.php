@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Admin\CreateTripAction;
-use App\Actions\Admin\DeleteTripAction;
-use App\Actions\Admin\GetTripsListAction;
-use App\Actions\Admin\UpdateTripAction;
+use App\Actions\Admin\Trip\CreateTripAction;
+use App\Actions\Admin\Trip\DeleteTripAction;
+use App\Actions\Admin\Trip\GetTripsListAction;
+use App\Actions\Admin\Trip\UpdateTripAction;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\AdminTripCreateRequest;
-use App\Http\Requests\Admin\AdminTripsRequest;
-use App\Http\Requests\Admin\AdminTripUpdateRequest;
+use App\Http\Requests\Admin\Trip\CreateTripRequest;
+use App\Http\Requests\Admin\Trip\IndexTripsRequest;
+use App\Http\Requests\Admin\Trip\UpdateTripRequest;
 use App\Models\Trip;
 use App\Queries\Builders\BusQueryBuilder;
 use Illuminate\Http\RedirectResponse;
@@ -26,7 +26,7 @@ class TripController extends Controller
     /**
      * Display a listing of the trips.
      */
-    public function index(AdminTripsRequest $request, GetTripsListAction $action): Response
+    public function index(IndexTripsRequest $request, GetTripsListAction $action): Response
     {
         $listData = $request->toDTO();
         $trips = $action->execute($listData);
@@ -59,7 +59,7 @@ class TripController extends Controller
     /**
      * Store a newly created trip in storage.
      */
-    public function store(AdminTripCreateRequest $request, CreateTripAction $action): RedirectResponse
+    public function store(CreateTripRequest $request, CreateTripAction $action): RedirectResponse
     {
         $tripData = $request->toDTO();
         $action->execute($tripData);
@@ -87,7 +87,7 @@ class TripController extends Controller
     /**
      * Update the specified trip in storage.
      */
-    public function update(AdminTripUpdateRequest $request, Trip $trip, UpdateTripAction $action): RedirectResponse
+    public function update(UpdateTripRequest $request, Trip $trip, UpdateTripAction $action): RedirectResponse
     {
         $tripData = $request->toDTO();
         $action->execute($trip, $tripData);

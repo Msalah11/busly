@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Admin;
+namespace App\Actions\Admin\Bus;
 
-use App\DTOs\Admin\AdminBusListData;
+use App\DTOs\Admin\Bus\AdminBusListData;
 use App\Queries\Builders\BusQueryBuilder;
 use Illuminate\Pagination\LengthAwarePaginator;
 

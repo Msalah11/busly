@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Admin;
+namespace App\Actions\Admin\User;
 
-use App\DTOs\Admin\AdminUserListData;
+use App\DTOs\Admin\User\AdminUserListData;
 use App\Queries\Builders\UserQueryBuilder;
 use Illuminate\Pagination\LengthAwarePaginator;
 

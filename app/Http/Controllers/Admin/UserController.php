@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Admin\DeleteUserAction;
-use App\Actions\Admin\GetUsersListAction;
-use App\Actions\Admin\UpdateUserAction;
+use App\Actions\Admin\User\DeleteUserAction;
+use App\Actions\Admin\User\GetUsersListAction;
+use App\Actions\Admin\User\UpdateUserAction;
 use App\Actions\Auth\RegisterUserAction;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\AdminUserCreateRequest;
-use App\Http\Requests\Admin\AdminUsersRequest;
-use App\Http\Requests\Admin\AdminUserUpdateRequest;
+use App\Http\Requests\Admin\User\CreateUserRequest;
+use App\Http\Requests\Admin\User\IndexUserRequest;
+use App\Http\Requests\Admin\User\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -25,7 +25,7 @@ class UserController extends Controller
     /**
      * Display a listing of the users.
      */
-    public function index(AdminUsersRequest $request, GetUsersListAction $action): Response
+    public function index(IndexUserRequest $request, GetUsersListAction $action): Response
     {
         $listData = $request->toDTO();
         $users = $action->execute($listData);
@@ -49,7 +49,7 @@ class UserController extends Controller
     /**
      * Store a newly created user in storage.
      */
-    public function store(AdminUserCreateRequest $request, RegisterUserAction $action): RedirectResponse
+    public function store(CreateUserRequest $request, RegisterUserAction $action): RedirectResponse
     {
         $registerData = $request->toDTO();
         $action->execute($registerData, autoLogin: false);
@@ -71,7 +71,7 @@ class UserController extends Controller
     /**
      * Update the specified user in storage.
      */
-    public function update(AdminUserUpdateRequest $request, User $user, UpdateUserAction $action): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action): RedirectResponse
     {
         $profileData = $request->toDTO();
         $action->execute($user, $profileData, $request);

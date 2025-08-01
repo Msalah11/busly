@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Admin\CreateBusAction;
-use App\Actions\Admin\DeleteBusAction;
-use App\Actions\Admin\GetBusesListAction;
-use App\Actions\Admin\UpdateBusAction;
+use App\Actions\Admin\Bus\CreateBusAction;
+use App\Actions\Admin\Bus\DeleteBusAction;
+use App\Actions\Admin\Bus\GetBusesListAction;
+use App\Actions\Admin\Bus\UpdateBusAction;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\CreateBusRequest;
-use App\Http\Requests\Admin\IndexBusRequest;
-use App\Http\Requests\Admin\UpdateBusRequest;
+use App\Http\Requests\Admin\Bus\CreateBusRequest;
+use App\Http\Requests\Admin\Bus\IndexBusRequest;
+use App\Http\Requests\Admin\Bus\UpdateBusRequest;
 use App\Models\Bus;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;

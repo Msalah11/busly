@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\User;
 
-use App\DTOs\Admin\AdminUserListData;
+use App\DTOs\Admin\User\AdminUserListData;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Request class for admin users listing.
  */
-class AdminUsersRequest extends FormRequest
+class IndexUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
