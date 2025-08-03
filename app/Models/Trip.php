@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  */
 class Trip extends Model
 {
+    /** @use HasFactory<\Database\Factories\TripFactory> */
     use HasFactory;
 
     /**

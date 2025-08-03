@@ -127,7 +127,9 @@ class TripFactory extends Factory
      */
     public function evening(): static
     {
-        $departureTime = Carbon::createFromFormat('H:i', $this->faker->timeBetween('18:00', '23:00')->format('H:i'));
+        $hour = $this->faker->numberBetween(18, 23);
+        $minute = $this->faker->randomElement([0, 15, 30, 45]);
+        $departureTime = Carbon::createFromFormat('H:i', sprintf('%02d:%02d', $hour, $minute));
         $arrivalTime = $departureTime->copy()->addHours($this->faker->numberBetween(2, 6));
 
         return $this->state(fn (array $attributes): array => [

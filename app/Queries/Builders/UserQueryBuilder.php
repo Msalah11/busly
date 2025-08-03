@@ -9,6 +9,7 @@ use App\Queries\Core\AbstractQueryBuilder;
 use App\Queries\Filters\Common\DateRangeFilter;
 use App\Queries\Filters\Common\SearchFilter;
 use App\Queries\Filters\User\ActiveFilter;
+use App\Queries\Filters\User\UserRoleFilter;
 use App\Queries\Filters\User\VerifiedFilter;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
 use App\Queries\Modifiers\Ordering\OrderByNameModifier;
@@ -112,6 +113,39 @@ final class UserQueryBuilder extends AbstractQueryBuilder
     public function createdThisMonth(): self
     {
         return $this->createdBetween(now()->startOfMonth(), now()->endOfMonth());
+    }
+
+    /**
+     * Filter users created in the last N days.
+     */
+    public function recentDays(int $days = 7): self
+    {
+        return $this->createdBetween(now()->subDays($days), now());
+    }
+
+    /**
+     * Filter users by role.
+     */
+    public function withRole(string $role): self
+    {
+        $this->addFilter(new UserRoleFilter($role));
+
+        return $this;
+    }
+
+    /**
+     * Get user statistics.
+     *
+     * @return array<string, int>
+     */
+    public function getStatistics(): array
+    {
+        return [
+            'total' => (new self)->get()->count(),
+            'admins' => (new self)->withRole('admin')->get()->count(),
+            'regular' => (new self)->withRole('user')->get()->count(),
+            'recent' => (new self)->recentDays(7)->get()->count(),
+        ];
     }
 
     /**

@@ -6,14 +6,19 @@ namespace App\Queries\Builders;
 
 use App\Models\Trip;
 use App\Queries\Core\AbstractQueryBuilder;
+use App\Queries\Filters\Common\CreatedTodayFilter;
 use App\Queries\Filters\Common\DateRangeFilter;
+use App\Queries\Filters\Common\RecentDaysFilter;
 use App\Queries\Filters\Common\SearchFilter;
 use App\Queries\Filters\Trip\ActiveTripFilter;
 use App\Queries\Filters\Trip\AvailableSeatsFilter;
 use App\Queries\Filters\Trip\DepartureDateFilter;
 use App\Queries\Filters\Trip\RouteFilter;
 use App\Queries\Filters\Trip\UpcomingTripFilter;
+use App\Queries\Modifiers\Limiting\LimitModifier;
+use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
 use App\Queries\Modifiers\Ordering\OrderByDepartureModifier;
+use App\Queries\Modifiers\Relations\RelationModifier;
 use Carbon\CarbonInterface;
 
 /**
@@ -154,24 +159,63 @@ final class TripQueryBuilder extends AbstractQueryBuilder
     /**
      * Eager load relationships while maintaining the query builder chain.
      *
-     * @param  array<int, string>|string  $relations
+     * @param  array<int, string>|array<string, \Closure>|string  $relations
      * @return $this
      */
     public function with(array|string $relations): self
     {
-        $this->addFilter(new class($relations) implements \App\Contracts\Queries\QueryFilterInterface
-        {
-            /**
-             * @param  array<int, string>|string  $relations
-             */
-            public function __construct(private readonly array|string $relations) {}
-
-            public function apply(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
-            {
-                return $query->with($this->relations);
-            }
-        });
+        $this->addFilter(new RelationModifier($relations));
 
         return $this;
+    }
+
+    /**
+     * Filter trips created today.
+     */
+    public function createdToday(): self
+    {
+        $this->addFilter(new CreatedTodayFilter);
+
+        return $this;
+    }
+
+    /**
+     * Filter trips created in the last N days.
+     */
+    public function recentDays(int $days = 7): self
+    {
+        $this->addFilter(new RecentDaysFilter($days));
+
+        return $this;
+    }
+
+    /**
+     * Get recent trips with their associated bus data.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip>
+     */
+    public function getRecentWithBus(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    {
+        $this->addFilter(new OrderByCreatedModifier('desc'));
+        $this->addFilter(new LimitModifier($limit));
+
+        return $this->with('bus:id,bus_code,type')
+            ->get(['id', 'origin', 'destination', 'departure_time', 'price', 'bus_id', 'is_active', 'created_at']);
+    }
+
+    /**
+     * Get trip statistics.
+     *
+     * @return array<string, int>
+     */
+    public function getStatistics(): array
+    {
+        return [
+            'total' => (new self)->get()->count(),
+            'active' => (new self)->active()->get()->count(),
+            'inactive' => (new self)->active(false)->get()->count(),
+            'today' => (new self)->createdToday()->get()->count(),
+            'this_week' => (new self)->recentDays(7)->get()->count(),
+        ];
     }
 }

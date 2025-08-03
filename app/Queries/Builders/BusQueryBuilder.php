@@ -11,7 +11,9 @@ use App\Queries\Filters\Bus\ActiveBusFilter;
 use App\Queries\Filters\Bus\BusTypeFilter;
 use App\Queries\Filters\Bus\CapacityFilter;
 use App\Queries\Filters\Common\SearchFilter;
+use App\Queries\Modifiers\Limiting\LimitModifier;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
+use App\Queries\Modifiers\Relations\RelationModifier;
 
 /**
  * Query builder for Bus model with common filters and methods.
@@ -109,5 +111,47 @@ final class BusQueryBuilder extends AbstractQueryBuilder
     public static function hasActiveTrips(Bus $bus): bool
     {
         return $bus->trips()->where('is_active', true)->exists();
+    }
+
+    /**
+     * Filter buses by type.
+     */
+    public function withType(BusType $type): self
+    {
+        $this->addFilter(new BusTypeFilter($type));
+
+        return $this;
+    }
+
+    /**
+     * Get recent buses with their active trips.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Bus>
+     */
+    public function getRecentWithTrips(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    {
+        $this->addFilter(new LimitModifier($limit));
+        $this->addFilter(new RelationModifier(['trips' => function ($query): void {
+            $query->where('is_active', true)->limit(3);
+        }]));
+
+        return $this->orderByCreated()
+            ->get(['id', 'bus_code', 'type', 'capacity', 'is_active', 'created_at']);
+    }
+
+    /**
+     * Get bus statistics.
+     *
+     * @return array<string, int>
+     */
+    public function getStatistics(): array
+    {
+        return [
+            'total' => (new self)->get()->count(),
+            'active' => (new self)->active()->get()->count(),
+            'inactive' => (new self)->active(false)->get()->count(),
+            'standard' => (new self)->withType(BusType::STANDARD)->get()->count(),
+            'vip' => (new self)->withType(BusType::VIP)->get()->count(),
+        ];
     }
 }

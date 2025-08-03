@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Bus extends Model
 {
+    /** @use HasFactory<\Database\Factories\BusFactory> */
     use HasFactory;
 
     /**
