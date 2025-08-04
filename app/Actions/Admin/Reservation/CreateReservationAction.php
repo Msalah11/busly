@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Admin\Reservation;
 
 use App\DTOs\Admin\Reservation\ReservationData;
+use App\Enums\ReservationStatus;
 use App\Exceptions\InsufficientSeatsException;
 use App\Models\Reservation;
 use App\Models\Trip;
@@ -32,9 +33,11 @@ final class CreateReservationAction
                 ->active()
                 ->findOrFail($data->tripId);
             
-            $this->validateSeatAvailability($trip, $data->seatsCount);
+            // Only validate seat availability for confirmed reservations
+            if ($data->status === ReservationStatus::CONFIRMED) {
+                $this->validateSeatAvailability($trip, $data->seatsCount);
+            }
 
-            // Create the reservation (code generation handled by model)
             $reservation = Reservation::create($data->toArray());
 
             return $reservation->load(['user', 'trip.bus']);

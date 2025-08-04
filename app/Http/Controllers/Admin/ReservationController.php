@@ -24,10 +24,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Controller for managing reservations in the admin panel.
- * 
- * Follows SOLID principles with single responsibility for HTTP request/response handling.
- * Business logic is delegated to Action classes.
+ * Controller for admin reservation management operations.
  */
 final class ReservationController extends Controller
 {

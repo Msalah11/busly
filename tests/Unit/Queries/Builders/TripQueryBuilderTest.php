@@ -72,19 +72,7 @@ describe('method chaining', function (): void {
         expect($result2)->toBeInstanceOf(TripQueryBuilder::class);
     });
 
-    it('upcoming method returns self for chaining', function (): void {
-        $result = $this->builder->upcoming();
 
-        expect($result)->toBe($this->builder);
-    });
-
-    it('upcoming method accepts boolean parameters', function (): void {
-        $result1 = $this->builder->upcoming(true);
-        $result2 = (new TripQueryBuilder)->upcoming(false);
-
-        expect($result1)->toBe($this->builder);
-        expect($result2)->toBeInstanceOf(TripQueryBuilder::class);
-    });
 
     it('byDepartureDate method returns self for chaining', function (): void {
         $result = $this->builder->byDepartureDate(Carbon::today());
@@ -134,8 +122,7 @@ describe('method chaining', function (): void {
         $result = (new TripQueryBuilder)
             ->search('Cairo')
             ->byRoute('Cairo', 'Alexandria')
-            ->active(true)
-            ->upcoming(true);
+            ->active(true);
 
         expect($result)->toBeInstanceOf(TripQueryBuilder::class);
     });
@@ -145,7 +132,6 @@ describe('method chaining', function (): void {
             ->search('Express')
             ->byRoute('Cairo', 'Alexandria')
             ->active(true)
-            ->upcoming(true)
             ->withAvailableSeats(2)
             ->orderByDeparture('asc');
 
@@ -260,7 +246,7 @@ describe('method existence', function (): void {
             'search',
             'byRoute',
             'active',
-            'upcoming',
+
             'byDepartureDate',
             'departureBetween',
             'withAvailableSeats',

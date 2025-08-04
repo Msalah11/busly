@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Action to update an existing reservation with optimized queries.
+ * Action to update an existing reservation.
  */
 final class UpdateReservationAction
 {
@@ -29,7 +29,8 @@ final class UpdateReservationAction
     {
         return DB::transaction(function () use ($reservation, $data): Reservation {
             // If changing trip or seat count, validate the new trip and availability
-            if ($data->tripId !== $reservation->trip_id || $data->seatsCount !== $reservation->seats_count) {
+            // Only validate for confirmed reservations
+            if (($data->tripId !== $reservation->trip_id || $data->seatsCount !== $reservation->seats_count) && $data->status === ReservationStatus::CONFIRMED) {
                 $trip = (new TripQueryBuilder())
                     ->with('bus')
                     ->active()
