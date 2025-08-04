@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('origin');
             $table->string('destination');
-            $table->datetime('departure_time');
-            $table->datetime('arrival_time');
+            $table->time('departure_time');
+            $table->time('arrival_time');
             $table->decimal('price', 8, 2);
             $table->foreignId('bus_id')->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(true);

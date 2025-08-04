@@ -14,6 +14,8 @@ use App\Queries\Filters\Reservation\TripReservationFilter;
 use App\Queries\Filters\Reservation\UpcomingReservationFilter;
 use App\Queries\Filters\Reservation\UserReservationFilter;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
+use App\Queries\Modifiers\Relations\RelationModifier;
+use App\Queries\Filters\Common\RecentDaysFilter;
 use Carbon\CarbonInterface;
 
 /**
@@ -162,5 +164,46 @@ final class ReservationQueryBuilder extends AbstractQueryBuilder
     public function createdToday(): self
     {
         return $this->reservedBetween(now()->startOfDay(), now()->endOfDay());
+    }
+
+    /**
+     * Filter reservations created in the last N days.
+     *
+     * @return $this
+     */
+    public function recentDays(int $days = 7): self
+    {
+        $this->addFilter(new RecentDaysFilter($days));
+
+        return $this;
+    }
+
+    /**
+     * Eager load relationships while maintaining the query builder chain.
+     *
+     * @param  array<int, string>|array<string, \Closure>|string  $relations
+     * @return $this
+     */
+    public function with(array|string $relations): self
+    {
+        $this->addFilter(new RelationModifier($relations));
+
+        return $this;
+    }
+
+    /**
+     * Get reservation statistics.
+     *
+     * @return array<string, int>
+     */
+    public function getStatistics(): array
+    {
+        return [
+            'total' => (new self)->get()->count(),
+            'confirmed' => (new self)->confirmed()->get()->count(),
+            'cancelled' => (new self)->cancelled()->get()->count(),
+            'today' => (new self)->createdToday()->get()->count(),
+            'this_week' => (new self)->recentDays(7)->get()->count(),
+        ];
     }
 }

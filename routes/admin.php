@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Admin\BusController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\TripController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\EnsureUserIsAdmin;
@@ -21,4 +22,7 @@ Route::middleware(['auth', EnsureUserIsAdmin::class])->prefix('admin')->name('ad
 
     // Trip management resource routes
     Route::resource('trips', TripController::class)->except(['show']);
+
+    // Reservation management resource routes
+    Route::resource('reservations', ReservationController::class)->except(['show']);
 });

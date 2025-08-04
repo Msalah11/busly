@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Admin;
 
 use App\Queries\Builders\BusQueryBuilder;
+use App\Queries\Builders\ReservationQueryBuilder;
 use App\Queries\Builders\TripQueryBuilder;
 use App\Queries\Builders\UserQueryBuilder;
 
@@ -38,6 +39,7 @@ class GetDashboardDataAction
             'users' => (new UserQueryBuilder)->getStatistics(),
             'buses' => (new BusQueryBuilder)->getStatistics(),
             'trips' => (new TripQueryBuilder)->getStatistics(),
+            'reservations' => (new ReservationQueryBuilder)->getStatistics(),
         ];
     }
 

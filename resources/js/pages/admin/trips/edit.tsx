@@ -18,14 +18,16 @@ interface EditTripProps {
 }
 
 export default function EditTrip({ trip, buses }: EditTripProps) {
-    // Helper function to extract time from datetime string
-    const extractTime = (datetime: string) => {
-        return new Date(datetime).toTimeString().slice(0, 5); // Gets HH:MM format
-    };
-
     // Helper function to format time for display
     const formatTime = (time: string) => {
-        return new Date(time).toLocaleTimeString('en-EG', {
+        if (!time || !time.includes(':')) return time;
+        
+        // Create a date object with today's date and the provided time
+        const [hours, minutes] = time.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+        
+        return date.toLocaleTimeString('en-EG', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: true,
@@ -35,8 +37,8 @@ export default function EditTrip({ trip, buses }: EditTripProps) {
     const { data, setData, patch, processing, errors } = useForm({
         origin: trip.origin,
         destination: trip.destination,
-        departure_time: extractTime(trip.departure_time),
-        arrival_time: extractTime(trip.arrival_time),
+        departure_time: trip.departure_time,
+        arrival_time: trip.arrival_time,
         price: trip.price,
         bus_id: trip.bus_id.toString(),
         is_active: trip.is_active,

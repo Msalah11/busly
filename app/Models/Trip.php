@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ReservationStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,11 +19,12 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property int $id
  * @property string $origin
  * @property string $destination
- * @property \Carbon\Carbon $departure_time
- * @property \Carbon\Carbon $arrival_time
+ * @property string $departure_time
+ * @property string $arrival_time
  * @property float $price
  * @property int $bus_id
  * @property bool $is_active
+ * @property int $available_seats
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -52,8 +54,6 @@ class Trip extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'departure_time' => 'datetime',
-        'arrival_time' => 'datetime',
         'price' => 'decimal:2',
         'is_active' => 'boolean',
     ];
@@ -93,5 +93,43 @@ class Trip extends Model
             'id',
             'id'
         );
+    }
+
+    /**
+     * Get the number of available seats for this trip.
+     */
+    public function getAvailableSeatsAttribute(): int
+    {
+        if (!$this->relationLoaded('bus')) {
+            $this->load('bus');
+        }
+
+        $totalSeats = $this->bus->capacity;
+        $reservedSeats = $this->reservations()
+            ->where('status', '!=', ReservationStatus::CANCELLED)
+            ->sum('seats_count');
+
+        return max(0, $totalSeats - $reservedSeats);
+    }
+
+    /**
+     * Get available seats count, excluding a specific reservation.
+     */
+    public function getAvailableSeatsExcluding(?int $excludeReservationId = null): int
+    {
+        if (!$this->relationLoaded('bus')) {
+            $this->load('bus');
+        }
+
+        $totalSeats = $this->bus->capacity;
+        $query = $this->reservations()->where('status', '!=', ReservationStatus::CANCELLED);
+        
+        if ($excludeReservationId) {
+            $query->where('id', '!=', $excludeReservationId);
+        }
+        
+        $reservedSeats = $query->sum('seats_count');
+
+        return max(0, $totalSeats - $reservedSeats);
     }
 }

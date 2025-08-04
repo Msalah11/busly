@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Bus, Folder, LayoutGrid, Route, Shield, Users } from 'lucide-react';
+import { BookOpen, Bus, Calendar, Folder, LayoutGrid, Route, Shield, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const getMainNavItems = (isAdmin: boolean): NavItem[] => {
@@ -36,6 +36,11 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
             title: 'Trip Management',
             href: route('admin.trips.index'),
             icon: Route,
+        });
+        items.push({
+            title: 'Reservation Management',
+            href: route('admin.reservations.index'),
+            icon: Calendar,
         });
     }
 

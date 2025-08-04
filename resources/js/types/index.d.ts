@@ -62,7 +62,24 @@ export interface Trip {
     price: string;
     bus_id: number;
     is_active: boolean;
+    available_seats?: number;
     created_at: string;
     updated_at: string;
     bus?: Bus;
+}
+
+export interface Reservation {
+    id: number;
+    reservation_code: string;
+    user_id: number;
+    trip_id: number;
+    seats_count: number;
+    total_price: string;
+    status: 'confirmed' | 'cancelled';
+    reserved_at: string;
+    cancelled_at: string | null;
+    created_at: string;
+    updated_at: string;
+    user?: User;
+    trip?: Trip;
 }

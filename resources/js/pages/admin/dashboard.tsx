@@ -72,6 +72,13 @@ interface Stats {
         today: number;
         this_week: number;
     };
+    reservations?: {
+        total: number;
+        confirmed: number;
+        cancelled: number;
+        today: number;
+        this_week: number;
+    };
 }
 
 interface AdminDashboardProps {
@@ -91,7 +98,14 @@ export default function AdminDashboard({ users, stats, recentBuses, recentTrips 
     const getInitials = useInitials();
 
     const formatTime = (time: string) => {
-        return new Date(time).toLocaleTimeString('en-EG', {
+        if (!time || !time.includes(':')) return time;
+        
+        // Create a date object with today's date and the provided time
+        const [hours, minutes] = time.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+        
+        return date.toLocaleTimeString('en-EG', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false
@@ -121,7 +135,7 @@ export default function AdminDashboard({ users, stats, recentBuses, recentTrips 
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
                         <p className="text-muted-foreground">
-                            Manage users, buses, and trips
+                            Manage users, buses, trips, and reservations
                         </p>
                     </div>
                     <div className="flex gap-2">
@@ -135,6 +149,12 @@ export default function AdminDashboard({ users, stats, recentBuses, recentTrips 
                             <Button variant="outline">
                                 <Route className="mr-2 h-4 w-4" />
                                 Manage Trips
+                            </Button>
+                        </Link>
+                        <Link href={route('admin.reservations.index')}>
+                            <Button variant="outline">
+                                <Calendar className="mr-2 h-4 w-4" />
+                                Manage Reservations
                             </Button>
                         </Link>
                         <Link href={route('admin.users.index')}>
@@ -340,6 +360,77 @@ export default function AdminDashboard({ users, stats, recentBuses, recentTrips 
                                 <div className="text-2xl font-bold text-purple-600">{stats.trips.this_week}</div>
                                 <p className="text-xs text-muted-foreground">
                                     Created this week
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+
+                {/* Reservation Stats Cards */}
+                <div>
+                    <h2 className="text-lg font-semibold mb-4">Reservation Statistics</h2>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Total Reservations</CardTitle>
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{stats.reservations?.total ?? 0}</div>
+                                <p className="text-xs text-muted-foreground">
+                                    All reservations made
+                                </p>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
+                                <Activity className="h-4 w-4 text-green-600" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-green-600">{stats.reservations?.confirmed ?? 0}</div>
+                                <p className="text-xs text-muted-foreground">
+                                    Active reservations
+                                </p>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Cancelled</CardTitle>
+                                <Clock className="h-4 w-4 text-red-600" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-red-600">{stats.reservations?.cancelled ?? 0}</div>
+                                <p className="text-xs text-muted-foreground">
+                                    Cancelled bookings
+                                </p>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Today's Reservations</CardTitle>
+                                <TrendingUp className="h-4 w-4 text-blue-600" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-blue-600">{stats.reservations?.today ?? 0}</div>
+                                <p className="text-xs text-muted-foreground">
+                                    Made today
+                                </p>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">This Week</CardTitle>
+                                <Users className="h-4 w-4 text-purple-600" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-purple-600">{stats.reservations?.this_week ?? 0}</div>
+                                <p className="text-xs text-muted-foreground">
+                                    Made this week
                                 </p>
                             </CardContent>
                         </Card>

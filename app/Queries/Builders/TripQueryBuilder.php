@@ -14,7 +14,7 @@ use App\Queries\Filters\Trip\ActiveTripFilter;
 use App\Queries\Filters\Trip\AvailableSeatsFilter;
 use App\Queries\Filters\Trip\DepartureDateFilter;
 use App\Queries\Filters\Trip\RouteFilter;
-use App\Queries\Filters\Trip\UpcomingTripFilter;
+
 use App\Queries\Modifiers\Limiting\LimitModifier;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
 use App\Queries\Modifiers\Ordering\OrderByDepartureModifier;
@@ -85,18 +85,6 @@ final class TripQueryBuilder extends AbstractQueryBuilder
     public function active(bool $active = true): self
     {
         $this->addFilter(new ActiveTripFilter($active));
-
-        return $this;
-    }
-
-    /**
-     * Filter only upcoming trips.
-     *
-     * @return $this
-     */
-    public function upcoming(bool $upcoming = true): self
-    {
-        $this->addFilter(new UpcomingTripFilter($upcoming));
 
         return $this;
     }
