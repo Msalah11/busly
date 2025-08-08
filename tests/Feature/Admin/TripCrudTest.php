@@ -100,11 +100,11 @@ describe('Admin Trip CRUD Operations', function (): void {
             $bus = Bus::factory()->create();
             $originCity = City::factory()->create([
                 'name' => 'Test Origin City',
-                'code' => 'TOC' . fake()->unique()->randomNumber(2)
+                'code' => 'TOC'.fake()->unique()->randomNumber(2),
             ]);
             $destinationCity = City::factory()->create([
                 'name' => 'Test Destination City',
-                'code' => 'TDC' . fake()->unique()->randomNumber(2)
+                'code' => 'TDC'.fake()->unique()->randomNumber(2),
             ]);
 
             $tripData = [
@@ -245,19 +245,19 @@ describe('Admin Trip CRUD Operations', function (): void {
             $newBus = Bus::factory()->create();
             $oldOriginCity = City::factory()->create([
                 'name' => 'Old Origin City',
-                'code' => 'OOC' . fake()->unique()->randomNumber(2)
+                'code' => 'OOC'.fake()->unique()->randomNumber(2),
             ]);
             $oldDestinationCity = City::factory()->create([
                 'name' => 'Old Destination City',
-                'code' => 'ODC' . fake()->unique()->randomNumber(2)
+                'code' => 'ODC'.fake()->unique()->randomNumber(2),
             ]);
             $newOriginCity = City::factory()->create([
                 'name' => 'New Origin City',
-                'code' => 'NOC' . fake()->unique()->randomNumber(2)
+                'code' => 'NOC'.fake()->unique()->randomNumber(2),
             ]);
             $newDestinationCity = City::factory()->create([
                 'name' => 'New Destination City',
-                'code' => 'NDC' . fake()->unique()->randomNumber(2)
+                'code' => 'NDC'.fake()->unique()->randomNumber(2),
             ]);
 
             $trip = Trip::factory()->create([
@@ -339,11 +339,11 @@ describe('Admin Trip CRUD Operations', function (): void {
             $bus = Bus::factory()->create();
             $originCity = City::factory()->create([
                 'name' => 'Test Time Origin',
-                'code' => 'TTO' . fake()->unique()->randomNumber(2)
+                'code' => 'TTO'.fake()->unique()->randomNumber(2),
             ]);
             $destinationCity = City::factory()->create([
                 'name' => 'Test Time Destination',
-                'code' => 'TTD' . fake()->unique()->randomNumber(2)
+                'code' => 'TTD'.fake()->unique()->randomNumber(2),
             ]);
 
             $tripData = [
