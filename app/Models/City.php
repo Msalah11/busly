@@ -73,6 +73,4 @@ class City extends Model
     {
         return $this->hasMany(Trip::class, 'destination_city_id');
     }
-
-
 }

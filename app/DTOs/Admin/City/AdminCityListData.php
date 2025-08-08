@@ -29,10 +29,10 @@ final readonly class AdminCityListData
         }
 
         return new self(
-            search: !empty($data['search']) ? (string) $data['search'] : null,
+            search: empty($data['search']) ? null : (string) $data['search'],
             isActive: $isActive,
-            sortBy: !empty($data['sort_by']) ? (string) $data['sort_by'] : 'sort_order',
-            sortDirection: !empty($data['sort_direction']) && in_array($data['sort_direction'], ['asc', 'desc'])
+            sortBy: empty($data['sort_by']) ? 'sort_order' : (string) $data['sort_by'],
+            sortDirection: ! empty($data['sort_direction']) && in_array($data['sort_direction'], ['asc', 'desc'])
                 ? (string) $data['sort_direction']
                 : 'asc',
         );

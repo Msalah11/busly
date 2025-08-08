@@ -63,7 +63,7 @@ describe('GetReservationsListAction', function (): void {
         $result = $this->action->execute($data);
 
         expect($result->count())->toBe(3);
-        expect($result->every(fn ($reservation) => $reservation->user_id === $user1->id))->toBeTrue();
+        expect($result->every(fn ($reservation): bool => $reservation->user_id === $user1->id))->toBeTrue();
     });
 
     it('can filter reservations by trip', function (): void {
@@ -77,7 +77,7 @@ describe('GetReservationsListAction', function (): void {
         $result = $this->action->execute($data);
 
         expect($result->count())->toBe(4);
-        expect($result->every(fn ($reservation) => $reservation->trip_id === $trip1->id))->toBeTrue();
+        expect($result->every(fn ($reservation): bool => $reservation->trip_id === $trip1->id))->toBeTrue();
     });
 
     it('can filter reservations by date range', function (): void {
@@ -102,7 +102,7 @@ describe('GetReservationsListAction', function (): void {
         $user = User::factory()->create(['name' => 'John Doe', 'email' => 'john@example.com']);
         $bus = Bus::factory()->create(['bus_code' => 'BUS123']);
         $trip = Trip::factory()->forBus($bus)->routeByName('Cairo', 'Alexandria')->create();
-        
+
         Reservation::factory()->for($user)->for($trip)->create();
 
         $data = new AdminReservationListData;
@@ -255,6 +255,5 @@ describe('GetReservationsListAction', function (): void {
         expect($result->count())->toBe(1);
         expect($result->first()->reservation_code)->toBe('RES-ABC123');
     });
-
 
 });

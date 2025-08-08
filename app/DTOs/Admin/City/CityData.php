@@ -28,10 +28,10 @@ final readonly class CityData
         return new self(
             name: (string) $data['name'],
             code: strtoupper((string) $data['code']),
-            latitude: !empty($data['latitude']) ? (float) $data['latitude'] : null,
-            longitude: !empty($data['longitude']) ? (float) $data['longitude'] : null,
-            isActive: !empty($data['is_active']) && filter_var($data['is_active'], FILTER_VALIDATE_BOOLEAN),
-            sortOrder: !empty($data['sort_order']) ? (int) $data['sort_order'] : 0,
+            latitude: empty($data['latitude']) ? null : (float) $data['latitude'],
+            longitude: empty($data['longitude']) ? null : (float) $data['longitude'],
+            isActive: ! empty($data['is_active']) && filter_var($data['is_active'], FILTER_VALIDATE_BOOLEAN),
+            sortOrder: empty($data['sort_order']) ? 0 : (int) $data['sort_order'],
         );
     }
 

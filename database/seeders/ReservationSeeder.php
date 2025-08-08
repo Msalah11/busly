@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\ReservationStatus;
-use App\Models\Bus;
 use App\Models\Reservation;
 use App\Models\Trip;
 use App\Models\User;
@@ -34,6 +33,7 @@ class ReservationSeeder extends Seeder
 
         if ($trips->isEmpty()) {
             $this->command->warn('No trips found. Please run TripSeeder first.');
+
             return;
         }
 
@@ -63,10 +63,10 @@ class ReservationSeeder extends Seeder
                 (int) floor($trip->bus->capacity / 2) // Don't fill more than half capacity
             );
 
-            for ($i = 0; $i < $reservationCount; $i++) {
+            for ($i = 0; $i < $reservationCount; ++$i) {
                 $user = $users->random();
                 $seatsCount = fake()->numberBetween(1, min(4, $trip->bus->capacity - $this->getReservedSeats($trip)));
-                
+
                 if ($seatsCount <= 0) {
                     break; // No more seats available
                 }
@@ -126,7 +126,7 @@ class ReservationSeeder extends Seeder
         foreach ($trips->take(10) as $trip) {
             $user = $users->random();
             $seatsCount = fake()->numberBetween(1, 2);
-            
+
             // Check if there are available seats
             if ($seatsCount > ($trip->bus->capacity - $this->getReservedSeats($trip))) {
                 continue;
@@ -143,8 +143,8 @@ class ReservationSeeder extends Seeder
                     'status' => $status,
                     'total_price' => $seatsCount * $trip->price,
                     'reserved_at' => $reservedAt,
-                    'cancelled_at' => $status === ReservationStatus::CANCELLED 
-                        ? fake()->dateTimeBetween($reservedAt, 'now') 
+                    'cancelled_at' => $status === ReservationStatus::CANCELLED
+                        ? fake()->dateTimeBetween($reservedAt, 'now')
                         : null,
                 ]);
         }
@@ -161,14 +161,12 @@ class ReservationSeeder extends Seeder
         $this->command->info('Creating upcoming reservations...');
 
         // Get trips that are in the future
-        $upcomingTrips = $trips->filter(function ($trip) {
-            return $trip->departure_time > now();
-        });
+        $upcomingTrips = $trips->filter(fn ($trip): bool => $trip->departure_time > now());
 
         foreach ($upcomingTrips->take(12) as $trip) {
             $user = $users->random();
             $seatsCount = fake()->numberBetween(1, 3);
-            
+
             // Check if there are available seats
             if ($seatsCount > ($trip->bus->capacity - $this->getReservedSeats($trip))) {
                 continue;

@@ -55,11 +55,11 @@ final readonly class ReservationData
             'status' => $this->status,
         ];
 
-        if ($this->reservedAt !== null) {
+        if ($this->reservedAt instanceof \Carbon\Carbon) {
             $data['reserved_at'] = $this->reservedAt;
         }
 
-        if ($this->cancelledAt !== null) {
+        if ($this->cancelledAt instanceof \Carbon\Carbon) {
             $data['cancelled_at'] = $this->cancelledAt;
         }
 

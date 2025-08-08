@@ -31,17 +31,17 @@ final class UpdateReservationAction
             // If changing trip or seat count, validate the new trip and availability
             // Only validate for confirmed reservations
             if (($data->tripId !== $reservation->trip_id || $data->seatsCount !== $reservation->seats_count) && $data->status === ReservationStatus::CONFIRMED) {
-                $trip = (new TripQueryBuilder())
+                $trip = (new TripQueryBuilder)
                     ->with('bus')
                     ->active()
                     ->findOrFail($data->tripId);
-                
+
                 $this->validateSeatAvailability($trip, $data->seatsCount, $reservation->id);
             }
 
             // Handle status-specific updates
             $updateData = $this->prepareUpdateData($data, $reservation);
-            
+
             $reservation->update($updateData);
 
             return $reservation->load(['user', 'trip.bus']);
@@ -58,9 +58,9 @@ final class UpdateReservationAction
             ->confirmed()
             ->where('id', '!=', $excludeReservationId)
             ->sum('seats_count');
-        
+
         $availableSeats = $trip->bus->capacity - $reservedSeats;
-        
+
         if ($requestedSeats > $availableSeats) {
             throw new InsufficientSeatsException($requestedSeats, $availableSeats);
         }
@@ -74,7 +74,7 @@ final class UpdateReservationAction
     private function prepareUpdateData(ReservationData $data, Reservation $reservation): array
     {
         $updateData = $data->toArray();
-        
+
         // Handle cancellation date logic
         if ($data->status === ReservationStatus::CANCELLED && $reservation->status !== ReservationStatus::CANCELLED) {
             $updateData['cancelled_at'] = $data->cancelledAt ?? now();

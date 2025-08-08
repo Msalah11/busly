@@ -25,7 +25,7 @@ final class GetTripsListAction
             ->with([
                 'bus:id,bus_code,type,capacity',
                 'originCity:id,name,code',
-                'destinationCity:id,name,code'
+                'destinationCity:id,name,code',
             ])
             ->when($data->hasSearch(), fn ($query): \App\Queries\Builders\TripQueryBuilder => $query->searchByRoute($data->search))
             ->when($data->hasActive(), fn ($query): \App\Queries\Builders\TripQueryBuilder => $query->active($data->active))

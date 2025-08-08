@@ -27,7 +27,7 @@ class CityFactory extends Factory
     public function definition(): array
     {
         $cityName = $this->faker->city();
-        
+
         return [
             'name' => $cityName,
             'code' => strtoupper(substr($cityName, 0, 3)),

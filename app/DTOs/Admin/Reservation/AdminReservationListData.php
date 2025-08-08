@@ -29,14 +29,14 @@ final readonly class AdminReservationListData
     public static function fromRequest(array $data): self
     {
         return new self(
-            search: !empty($data['search']) ? (string) $data['search'] : null,
-            status: !empty($data['status']) && $data['status'] !== 'all' 
-                ? ReservationStatus::from($data['status']) 
+            search: empty($data['search']) ? null : (string) $data['search'],
+            status: ! empty($data['status']) && $data['status'] !== 'all'
+                ? ReservationStatus::from($data['status'])
                 : null,
-            userId: !empty($data['user_id']) ? (int) $data['user_id'] : null,
-            tripId: !empty($data['trip_id']) ? (int) $data['trip_id'] : null,
-            startDate: !empty($data['start_date']) ? Carbon::parse($data['start_date']) : null,
-            endDate: !empty($data['end_date']) ? Carbon::parse($data['end_date']) : null,
+            userId: empty($data['user_id']) ? null : (int) $data['user_id'],
+            tripId: empty($data['trip_id']) ? null : (int) $data['trip_id'],
+            startDate: empty($data['start_date']) ? null : Carbon::parse($data['start_date']),
+            endDate: empty($data['end_date']) ? null : Carbon::parse($data['end_date']),
         );
     }
 
@@ -53,7 +53,7 @@ final readonly class AdminReservationListData
      */
     public function hasStatus(): bool
     {
-        return $this->status !== null;
+        return $this->status instanceof \App\Enums\ReservationStatus;
     }
 
     /**
@@ -77,6 +77,6 @@ final readonly class AdminReservationListData
      */
     public function hasDateRange(): bool
     {
-        return $this->startDate !== null || $this->endDate !== null;
+        return $this->startDate instanceof \Carbon\Carbon || $this->endDate instanceof \Carbon\Carbon;
     }
 }

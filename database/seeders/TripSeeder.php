@@ -21,6 +21,7 @@ class TripSeeder extends Seeder
 
         if ($activeBuses->isEmpty()) {
             $this->command->warn('No active buses found. Please run BusSeeder first.');
+
             return;
         }
 
@@ -29,6 +30,7 @@ class TripSeeder extends Seeder
 
         if ($cities->isEmpty()) {
             $this->command->warn('No active cities found. Please run CitySeeder first.');
+
             return;
         }
 
@@ -61,9 +63,7 @@ class TripSeeder extends Seeder
         ];
 
         // Filter out routes where cities don't exist
-        $routes = array_filter($routes, function ($route) {
-            return $route['origin_city_id'] !== null && $route['destination_city_id'] !== null;
-        });
+        $routes = array_filter($routes, fn (array $route): bool => $route['origin_city_id'] !== null && $route['destination_city_id'] !== null);
 
         // Time slots for different types of trips
         $timeSlots = [
@@ -114,7 +114,7 @@ class TripSeeder extends Seeder
         // Log the results
         $totalTrips = Trip::count();
         $routeCount = count($routes);
-        $this->command->info("Created trips for {$routeCount} routes with multiple time slots.");
-        $this->command->info("Total trips created: {$totalTrips}");
+        $this->command->info(sprintf('Created trips for %d routes with multiple time slots.', $routeCount));
+        $this->command->info('Total trips created: '.$totalTrips);
     }
 }

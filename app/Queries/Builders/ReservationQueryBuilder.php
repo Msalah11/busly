@@ -8,6 +8,7 @@ use App\Enums\ReservationStatus;
 use App\Models\Reservation;
 use App\Queries\Core\AbstractQueryBuilder;
 use App\Queries\Filters\Common\DateRangeFilter;
+use App\Queries\Filters\Common\RecentDaysFilter;
 use App\Queries\Filters\Common\SearchFilter;
 use App\Queries\Filters\Reservation\ReservationStatusFilter;
 use App\Queries\Filters\Reservation\TripReservationFilter;
@@ -15,7 +16,6 @@ use App\Queries\Filters\Reservation\UpcomingReservationFilter;
 use App\Queries\Filters\Reservation\UserReservationFilter;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
 use App\Queries\Modifiers\Relations\RelationModifier;
-use App\Queries\Filters\Common\RecentDaysFilter;
 use Carbon\CarbonInterface;
 
 /**

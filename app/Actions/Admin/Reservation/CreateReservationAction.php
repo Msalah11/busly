@@ -28,11 +28,11 @@ final class CreateReservationAction
     public function execute(ReservationData $data): Reservation
     {
         return DB::transaction(function () use ($data): Reservation {
-            $trip = (new TripQueryBuilder())
+            $trip = (new TripQueryBuilder)
                 ->with('bus')
                 ->active()
                 ->findOrFail($data->tripId);
-            
+
             // Only validate seat availability for confirmed reservations
             if ($data->status === ReservationStatus::CONFIRMED) {
                 $this->validateSeatAvailability($trip, $data->seatsCount);
@@ -55,9 +55,9 @@ final class CreateReservationAction
             ->get();
 
         $reservedSeats = $reservedSeats->sum('seats_count');
-        
+
         $availableSeats = $trip->bus->capacity - $reservedSeats;
-        
+
         if ($requestedSeats > $availableSeats) {
             throw new InsufficientSeatsException($requestedSeats, $availableSeats);
         }

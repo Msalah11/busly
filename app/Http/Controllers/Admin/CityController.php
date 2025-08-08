@@ -65,7 +65,7 @@ final class CityController extends Controller
 
         return redirect()
             ->route('admin.cities.index')
-            ->with('success', "City '{$city->name}' created successfully.");
+            ->with('success', sprintf("City '%s' created successfully.", $city->name));
     }
 
     /**
@@ -91,7 +91,7 @@ final class CityController extends Controller
 
         return redirect()
             ->route('admin.cities.index')
-            ->with('success', "City '{$updatedCity->name}' updated successfully.");
+            ->with('success', sprintf("City '%s' updated successfully.", $updatedCity->name));
     }
 
     /**
@@ -107,11 +107,11 @@ final class CityController extends Controller
 
             return redirect()
                 ->route('admin.cities.index')
-                ->with('success', "City '{$cityName}' deleted successfully.");
-        } catch (CityHasTripsException $e) {
+                ->with('success', sprintf("City '%s' deleted successfully.", $cityName));
+        } catch (CityHasTripsException $cityHasTripsException) {
             return redirect()
                 ->back()
-                ->with('error', $e->getMessage());
+                ->with('error', $cityHasTripsException->getMessage());
         }
     }
 }

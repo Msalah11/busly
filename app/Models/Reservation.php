@@ -32,6 +32,7 @@ class Reservation extends Model
 {
     /** @use HasFactory<\Database\Factories\ReservationFactory> */
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *

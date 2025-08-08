@@ -325,7 +325,7 @@ describe('UpdateReservationAction', function (): void {
         // The test should pass since the current cancelled reservation (5 seats) is excluded from seat calculation
         // Available seats = 10 (capacity) - 10 (confirmed) + 5 (current cancelled) = 5 seats
         $updatedReservation = $this->action->execute($reservation, $data);
-        
+
         expect($updatedReservation)->toBeInstanceOf(Reservation::class);
         expect($updatedReservation->status)->toBe(ReservationStatus::CONFIRMED);
     });

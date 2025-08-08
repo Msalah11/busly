@@ -107,7 +107,7 @@ class CitySeeder extends Seeder
         $activeCities = count($allCities);
         $inactiveCities = count($inactiveCities);
 
-        $this->command->info("Created {$totalCities} cities ({$activeCities} active, {$inactiveCities} inactive)");
+        $this->command->info(sprintf('Created %d cities (%d active, %d inactive)', $totalCities, $activeCities, $inactiveCities));
         $this->command->info('Cities seeded successfully!');
     }
 }

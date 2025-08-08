@@ -26,7 +26,7 @@ class ReservationSeatFactory extends Factory
     public function definition(): array
     {
         static $seatCounter = 1;
-        
+
         return [
             'reservation_id' => Reservation::factory(),
             'seat_number' => $seatCounter++,

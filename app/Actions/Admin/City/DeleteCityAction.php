@@ -23,12 +23,12 @@ final class DeleteCityAction
     public function execute(City $city): bool
     {
         // Check if city has any trips
-        $tripsCount = (new TripQueryBuilder())
+        $tripsCount = (new TripQueryBuilder)
             ->build()
             ->where('origin_city_id', $city->id)
             ->orWhere('destination_city_id', $city->id)
             ->count();
-        
+
         if ($tripsCount > 0) {
             throw new CityHasTripsException($city->name, $tripsCount);
         }

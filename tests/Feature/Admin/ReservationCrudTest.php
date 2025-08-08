@@ -8,7 +8,6 @@ use App\Models\Bus;
 use App\Models\Reservation;
 use App\Models\Trip;
 use App\Models\User;
-use App\Exceptions\InsufficientSeatsException;
 
 describe('Admin Reservation CRUD Operations', function (): void {
     beforeEach(function (): void {
@@ -110,7 +109,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
         it('loads trips with available seats information', function (): void {
             $bus = Bus::factory()->create(['capacity' => 50]);
             $trip = Trip::factory()->forBus($bus)->create();
-            
+
             // Create some existing reservations
             Reservation::factory()->for($trip)->create(['seats_count' => 10]);
             Reservation::factory()->for($trip)->create(['seats_count' => 5]);
@@ -145,7 +144,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
             if ($response->status() === 404) {
                 $this->markTestSkipped('Reservation routes not properly registered');
             }
-            
+
             $response->assertRedirect(route('admin.reservations.index'))
                 ->assertSessionHas('success');
 
@@ -263,21 +262,21 @@ describe('Admin Reservation CRUD Operations', function (): void {
             ];
 
             $response = $this->post(route('admin.reservations.store'), $reservationData);
-            
+
             // Check if creation was successful or skip if routes aren't available
             if ($response->status() === 404) {
                 $this->markTestSkipped('Reservation routes not properly registered');
             }
 
             $reservation = Reservation::first();
-            
+
             // Skip if no reservation was created due to validation issues
-            if (!$reservation) {
+            if (! $reservation) {
                 $this->markTestSkipped('Reservation creation failed - likely validation issues');
             }
-            
+
             expect($reservation->reservation_code)->toStartWith('RES-');
-            expect(strlen($reservation->reservation_code))->toBe(12); // RES- + 8 characters
+            expect(strlen((string) $reservation->reservation_code))->toBe(12); // RES- + 8 characters
         });
     });
 
@@ -303,10 +302,10 @@ describe('Admin Reservation CRUD Operations', function (): void {
         it('loads trips with available seats excluding current reservation', function (): void {
             $bus = Bus::factory()->create(['capacity' => 50]);
             $trip = Trip::factory()->forBus($bus)->create();
-            
+
             // Create the reservation we're editing
             $reservation = Reservation::factory()->for($trip)->create(['seats_count' => 10]);
-            
+
             // Create other reservations
             Reservation::factory()->for($trip)->create(['seats_count' => 5]);
 
@@ -351,7 +350,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
             if ($response->status() === 404) {
                 $this->markTestSkipped('Reservation routes not properly registered');
             }
-            
+
             $response->assertRedirect(route('admin.reservations.index'))
                 ->assertSessionHas('success');
 
@@ -388,9 +387,9 @@ describe('Admin Reservation CRUD Operations', function (): void {
         it('handles insufficient seats exception when updating', function (): void {
             $bus = Bus::factory()->create(['capacity' => 10]);
             $trip = Trip::factory()->forBus($bus)->create();
-            
+
             $reservation = Reservation::factory()->for($trip)->create(['seats_count' => 2]);
-            
+
             // Create other reservations that use up most seats
             Reservation::factory()->for($trip)->create(['seats_count' => 8]);
 
@@ -409,7 +408,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
             if ($response->status() === 404) {
                 $this->markTestSkipped('Reservation routes not properly registered');
             }
-            
+
             $response->assertRedirect();
 
             // The update might actually succeed depending on business logic
@@ -472,7 +471,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
             // Create confirmed reservations
             Reservation::factory()->for($trip)->create(['seats_count' => 10, 'status' => ReservationStatus::CONFIRMED]);
             Reservation::factory()->for($trip)->create(['seats_count' => 15, 'status' => ReservationStatus::CONFIRMED]);
-            
+
             // Create cancelled reservation (should not count)
             Reservation::factory()->for($trip)->create(['seats_count' => 5, 'status' => ReservationStatus::CANCELLED]);
 
@@ -498,7 +497,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
 
             // When excluding reservation1, available seats should be 40 - 15 = 25
             expect($trip->getAvailableSeatsExcluding($reservation1->id))->toBe(25);
-            
+
             // When excluding reservation2, available seats should be 40 - 10 = 30
             expect($trip->getAvailableSeatsExcluding($reservation2->id))->toBe(30);
         });
@@ -576,7 +575,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
             ];
 
             $response = $this->post(route('admin.reservations.store'), $reservationData);
-            
+
             // The creation might fail due to various validation issues, so just check it's a redirect
             // Accept both success redirect and potential 404 if routes aren't registered
             if ($response->status() === 404) {
@@ -586,12 +585,12 @@ describe('Admin Reservation CRUD Operations', function (): void {
             }
 
             $reservation = Reservation::first();
-            
+
             // Skip this test if no reservation was created (might be validation issues)
-            if (!$reservation) {
+            if (! $reservation) {
                 $this->markTestSkipped('Reservation creation failed - likely validation issues');
             }
-            
+
             // Verify relationships are properly set
             expect($reservation->user_id)->toBe($user->id);
             expect($reservation->trip_id)->toBe($trip->id);
@@ -616,7 +615,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
             $this->post(route('admin.reservations.store'), $reservationData);
 
             $reservation = Reservation::first();
-            
+
             expect($reservation->reserved_at->format('Y-m-d H:i:s'))->toBe($reservedAt->format('Y-m-d H:i:s'));
             expect($reservation->cancelled_at->format('Y-m-d H:i:s'))->toBe($cancelledAt->format('Y-m-d H:i:s'));
         });

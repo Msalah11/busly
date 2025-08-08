@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @implements QueryFilterInterface<Trip>
  */
-final class RouteSearchFilter implements QueryFilterInterface
+final readonly class RouteSearchFilter implements QueryFilterInterface
 {
     public function __construct(
-        private readonly string $searchTerm
+        private string $searchTerm
     ) {}
 
     /**
@@ -27,13 +27,13 @@ final class RouteSearchFilter implements QueryFilterInterface
      */
     public function apply(Builder $query): Builder
     {
-        return $query->where(function ($q) {
-            $q->whereHas('originCity', function ($cityQuery) {
-                $cityQuery->where('name', 'like', "%{$this->searchTerm}%")
-                         ->orWhere('code', 'like', "%{$this->searchTerm}%");
-            })->orWhereHas('destinationCity', function ($cityQuery) {
-                $cityQuery->where('name', 'like', "%{$this->searchTerm}%")
-                         ->orWhere('code', 'like', "%{$this->searchTerm}%");
+        return $query->where(function ($q): void {
+            $q->whereHas('originCity', function ($cityQuery): void {
+                $cityQuery->where('name', 'like', sprintf('%%%s%%', $this->searchTerm))
+                    ->orWhere('code', 'like', sprintf('%%%s%%', $this->searchTerm));
+            })->orWhereHas('destinationCity', function ($cityQuery): void {
+                $cityQuery->where('name', 'like', sprintf('%%%s%%', $this->searchTerm))
+                    ->orWhere('code', 'like', sprintf('%%%s%%', $this->searchTerm));
             });
         });
     }

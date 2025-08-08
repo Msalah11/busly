@@ -15,7 +15,6 @@ use App\Queries\Filters\Trip\AvailableSeatsFilter;
 use App\Queries\Filters\Trip\DepartureDateFilter;
 use App\Queries\Filters\Trip\RouteFilter;
 use App\Queries\Filters\Trip\RouteSearchFilter;
-
 use App\Queries\Modifiers\Limiting\LimitModifier;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
 use App\Queries\Modifiers\Ordering\OrderByDepartureModifier;

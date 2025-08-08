@@ -23,7 +23,7 @@ class DeleteReservationAction
         return DB::transaction(function () use ($reservation) {
             // Delete related reservation seats first
             $reservation->seats()->delete();
-            
+
             // Delete the reservation
             return $reservation->delete();
         });

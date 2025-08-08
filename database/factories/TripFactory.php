@@ -34,7 +34,7 @@ class TripFactory extends Factory
 
         // Use existing cities if available, otherwise create new ones
         $existingCities = City::pluck('id')->toArray();
-        
+
         if (count($existingCities) >= 2) {
             // Use existing cities
             $shuffled = collect($existingCities)->shuffle();
@@ -43,10 +43,10 @@ class TripFactory extends Factory
         } else {
             // Create new cities with unique codes by using sequence
             $originCity = City::factory()->sequence(
-                ['name' => 'Origin City ' . fake()->unique()->randomNumber(5), 'code' => fake()->unique()->lexify('???')]
+                ['name' => 'Origin City '.fake()->unique()->randomNumber(5), 'code' => fake()->unique()->lexify('???')]
             )->create();
             $destinationCity = City::factory()->sequence(
-                ['name' => 'Destination City ' . fake()->unique()->randomNumber(5), 'code' => fake()->unique()->lexify('???')]
+                ['name' => 'Destination City '.fake()->unique()->randomNumber(5), 'code' => fake()->unique()->lexify('???')]
             )->create();
             $originCityId = $originCity->id;
             $destinationCityId = $destinationCity->id;
@@ -100,18 +100,18 @@ class TripFactory extends Factory
     public function routeByName(string $originName, string $destinationName): static
     {
         $originCity = City::where('name', $originName)->first();
-        if (!$originCity) {
+        if (! $originCity) {
             $originCity = City::factory()->create([
                 'name' => $originName,
-                'code' => strtoupper(substr($originName, 0, 3)) . fake()->unique()->randomNumber(2)
+                'code' => strtoupper(substr($originName, 0, 3)).fake()->unique()->randomNumber(2),
             ]);
         }
-        
+
         $destinationCity = City::where('name', $destinationName)->first();
-        if (!$destinationCity) {
+        if (! $destinationCity) {
             $destinationCity = City::factory()->create([
                 'name' => $destinationName,
-                'code' => strtoupper(substr($destinationName, 0, 3)) . fake()->unique()->randomNumber(2)
+                'code' => strtoupper(substr($destinationName, 0, 3)).fake()->unique()->randomNumber(2),
             ]);
         }
 
@@ -186,4 +186,3 @@ class TripFactory extends Factory
         ]);
     }
 }
-

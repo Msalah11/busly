@@ -34,7 +34,7 @@ class ReservationFactory extends Factory
         $pricePerSeat = $this->faker->randomFloat(2, 50, 500);
 
         return [
-            'reservation_code' => 'RES-' . strtoupper($this->faker->unique()->bothify('########')),
+            'reservation_code' => 'RES-'.strtoupper($this->faker->unique()->bothify('########')),
             'user_id' => User::factory(),
             'trip_id' => Trip::factory(),
             'seats_count' => $seatsCount,
@@ -63,7 +63,7 @@ class ReservationFactory extends Factory
     {
         return $this->state(function (array $attributes): array {
             $cancelledAt = $this->faker->dateTimeBetween($attributes['reserved_at'], 'now');
-            
+
             return [
                 'status' => ReservationStatus::CANCELLED,
                 'cancelled_at' => $cancelledAt,

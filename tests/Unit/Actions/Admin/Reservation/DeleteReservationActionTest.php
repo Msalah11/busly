@@ -24,7 +24,7 @@ describe('DeleteReservationAction', function (): void {
 
     it('deletes associated reservation seats when deleting reservation', function (): void {
         $reservation = Reservation::factory()->create();
-        
+
         // Create some reservation seats
         ReservationSeat::factory()->for($reservation)->count(3)->create();
 
@@ -147,7 +147,7 @@ describe('DeleteReservationAction', function (): void {
 
     it('can delete multiple reservations sequentially', function (): void {
         $reservations = Reservation::factory()->count(5)->create();
-        
+
         // Add seats to some reservations
         ReservationSeat::factory()->for($reservations[0])->count(2)->create();
         ReservationSeat::factory()->for($reservations[2])->count(3)->create();
@@ -203,7 +203,7 @@ describe('DeleteReservationAction', function (): void {
         ReservationSeat::factory()->for($otherReservation)->count(2)->create();
 
         $reservationToDelete = Reservation::factory()->create();
-        
+
         $initialReservationCount = Reservation::count();
         $initialSeatCount = ReservationSeat::count();
 

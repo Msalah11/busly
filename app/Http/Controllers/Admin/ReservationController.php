@@ -8,10 +8,10 @@ use App\Actions\Admin\Reservation\CreateReservationAction;
 use App\Actions\Admin\Reservation\DeleteReservationAction;
 use App\Actions\Admin\Reservation\GetReservationsListAction;
 use App\Actions\Admin\Reservation\UpdateReservationAction;
-use App\Exceptions\InsufficientSeatsException;
 use App\DTOs\Admin\Reservation\AdminReservationListData;
-use App\Enums\Role;
 use App\Enums\ReservationStatus;
+use App\Enums\Role;
+use App\Exceptions\InsufficientSeatsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Reservation\CreateReservationRequest;
 use App\Http\Requests\Admin\Reservation\IndexReservationsRequest;
@@ -41,13 +41,13 @@ final class ReservationController extends Controller
         return Inertia::render('admin/reservations/index', [
             'reservations' => $reservations,
             'filters' => $request->only([
-                'search', 
-                'status', 
-                'user_id', 
-                'trip_id', 
-                'start_date', 
-                'end_date', 
-                'upcoming_only'
+                'search',
+                'status',
+                'user_id',
+                'trip_id',
+                'start_date',
+                'end_date',
+                'upcoming_only',
             ]),
             'statusOptions' => ReservationStatus::options(),
         ]);
@@ -69,10 +69,10 @@ final class ReservationController extends Controller
                 'bus:id,bus_code,capacity',
                 'originCity:id,name,code',
                 'destinationCity:id,name,code',
-                'reservations' => function ($query) {
+                'reservations' => function ($query): void {
                     $query->where('status', '!=', ReservationStatus::CANCELLED)
-                          ->select('trip_id', 'seats_count');
-                }
+                        ->select('trip_id', 'seats_count');
+                },
             ])
             ->active()
             ->orderByDeparture()
@@ -98,12 +98,12 @@ final class ReservationController extends Controller
 
             return redirect()
                 ->route('admin.reservations.index')
-                ->with('success', "Reservation {$reservation->reservation_code} created successfully.");
-        } catch (InsufficientSeatsException $e) {
+                ->with('success', sprintf('Reservation %s created successfully.', $reservation->reservation_code));
+        } catch (InsufficientSeatsException $insufficientSeatsException) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', $insufficientSeatsException->getMessage());
         }
     }
 
@@ -123,16 +123,17 @@ final class ReservationController extends Controller
                 'bus:id,bus_code,capacity',
                 'originCity:id,name,code',
                 'destinationCity:id,name,code',
-                'reservations' => function ($query) {
+                'reservations' => function ($query): void {
                     $query->where('status', '!=', \App\Enums\ReservationStatus::CANCELLED)
-                          ->select('trip_id', 'seats_count');
-                }
+                        ->select('trip_id', 'seats_count');
+                },
             ])
             ->active()
             ->orderByDeparture()
             ->get()
-            ->map(function ($trip) use ($reservation) {
+            ->map(function ($trip) use ($reservation): \App\Models\Trip {
                 $trip->available_seats = $trip->getAvailableSeatsExcluding($reservation->id);
+
                 return $trip;
             });
 
@@ -158,12 +159,12 @@ final class ReservationController extends Controller
 
             return redirect()
                 ->route('admin.reservations.index')
-                ->with('success', "Reservation {$updatedReservation->reservation_code} updated successfully.");
-        } catch (InsufficientSeatsException $e) {
+                ->with('success', sprintf('Reservation %s updated successfully.', $updatedReservation->reservation_code));
+        } catch (InsufficientSeatsException $insufficientSeatsException) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', $insufficientSeatsException->getMessage());
         }
     }
 
@@ -179,6 +180,6 @@ final class ReservationController extends Controller
 
         return redirect()
             ->route('admin.reservations.index')
-            ->with('success', "Reservation {$reservationCode} deleted successfully.");
+            ->with('success', sprintf('Reservation %s deleted successfully.', $reservationCode));
     }
 }

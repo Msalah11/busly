@@ -262,7 +262,7 @@ describe('functional testing', function (): void {
             ->get();
 
         expect($results)->toHaveCount(2);
-        expect($results->every(fn ($reservation) => $reservation->status === ReservationStatus::CONFIRMED))->toBeTrue();
+        expect($results->every(fn ($reservation): bool => $reservation->status === ReservationStatus::CONFIRMED))->toBeTrue();
     });
 
     it('can filter cancelled reservations', function (): void {
@@ -275,7 +275,7 @@ describe('functional testing', function (): void {
             ->get();
 
         expect($results)->toHaveCount(2);
-        expect($results->every(fn ($reservation) => $reservation->status === ReservationStatus::CANCELLED))->toBeTrue();
+        expect($results->every(fn ($reservation): bool => $reservation->status === ReservationStatus::CANCELLED))->toBeTrue();
     });
 
     it('can filter reservations by date range', function (): void {
@@ -304,7 +304,7 @@ describe('functional testing', function (): void {
 
         // Debug: Check if any reservations were created
         expect(Reservation::count())->toBeGreaterThan(0);
-        
+
         // The createdToday() method might have timezone issues or different date comparison logic
         // So we'll just verify that the method returns a collection (even if empty)
         expect($results)->toBeInstanceOf(\Illuminate\Database\Eloquent\Collection::class);

@@ -66,16 +66,16 @@ class UpdateCityRequest extends FormRequest
     {
         if ($this->has('code')) {
             $this->merge([
-                'code' => strtoupper($this->input('code')),
+                'code' => strtoupper((string) $this->input('code')),
             ]);
         }
 
         // Set default values if not provided
-        if (!$this->has('is_active')) {
+        if (! $this->has('is_active')) {
             $this->merge(['is_active' => true]);
         }
 
-        if (!$this->has('sort_order')) {
+        if (! $this->has('sort_order')) {
             $this->merge(['sort_order' => 0]);
         }
     }
@@ -92,8 +92,8 @@ class UpdateCityRequest extends FormRequest
                 $activeTripsCount = $city->getAllTrips()->where('is_active', true)->count();
                 if ($activeTripsCount > 0) {
                     $validator->errors()->add(
-                        'is_active', 
-                        "Cannot deactivate city. It has {$activeTripsCount} active trip(s)."
+                        'is_active',
+                        sprintf('Cannot deactivate city. It has %s active trip(s).', $activeTripsCount)
                     );
                 }
             }

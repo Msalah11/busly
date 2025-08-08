@@ -59,6 +59,15 @@ class Trip extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'route',
+    ];
+
+    /**
      * Get the bus that belongs to this trip.
      *
      * @return BelongsTo<Bus, $this>
@@ -120,7 +129,7 @@ class Trip extends Model
      */
     public function getAvailableSeatsAttribute(): int
     {
-        if (!$this->relationLoaded('bus')) {
+        if (! $this->relationLoaded('bus')) {
             $this->load('bus');
         }
 
@@ -137,17 +146,17 @@ class Trip extends Model
      */
     public function getAvailableSeatsExcluding(?int $excludeReservationId = null): int
     {
-        if (!$this->relationLoaded('bus')) {
+        if (! $this->relationLoaded('bus')) {
             $this->load('bus');
         }
 
         $totalSeats = $this->bus->capacity;
         $query = $this->reservations()->where('status', '!=', ReservationStatus::CANCELLED);
-        
-        if ($excludeReservationId) {
+
+        if ($excludeReservationId !== null && $excludeReservationId !== 0) {
             $query->where('id', '!=', $excludeReservationId);
         }
-        
+
         $reservedSeats = $query->sum('seats_count');
 
         return max(0, $totalSeats - $reservedSeats);
@@ -161,13 +170,15 @@ class Trip extends Model
         if ($this->relationLoaded('originCity') && $this->relationLoaded('destinationCity')) {
             $originName = $this->originCity->name ?? 'Unknown';
             $destinationName = $this->destinationCity->name ?? 'Unknown';
-            return "{$originName} -> {$destinationName}";
+
+            return sprintf('%s -> %s', $originName, $destinationName);
         }
 
         // Fallback: load relationships if not loaded
         $this->load(['originCity', 'destinationCity']);
         $originName = $this->originCity->name ?? 'Unknown';
         $destinationName = $this->destinationCity->name ?? 'Unknown';
-        return "{$originName} -> {$destinationName}";
+
+        return sprintf('%s -> %s', $originName, $destinationName);
     }
 }

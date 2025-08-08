@@ -72,8 +72,6 @@ describe('method chaining', function (): void {
         expect($result2)->toBeInstanceOf(TripQueryBuilder::class);
     });
 
-
-
     it('byDepartureDate method returns self for chaining', function (): void {
         $result = $this->builder->byDepartureDate(Carbon::today());
 
@@ -152,7 +150,7 @@ describe('parameter validation', function (): void {
 
         // Case sensitivity
         expect((new TripQueryBuilder)->search('cairo', ['origin_city_id'], true))->toBeInstanceOf(TripQueryBuilder::class);
-        
+
         // New city-based search
         expect((new TripQueryBuilder)->searchByRoute('Cairo'))->toBeInstanceOf(TripQueryBuilder::class);
     });

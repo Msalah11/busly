@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('trips', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('origin_city_id')->constrained('cities');
-            $table->foreignId('destination_city_id')->constrained('cities');            
+            $table->foreignId('destination_city_id')->constrained('cities');
             $table->time('departure_time');
             $table->time('arrival_time');
             $table->decimal('price', 8, 2);

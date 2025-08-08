@@ -13,8 +13,8 @@ class CityHasTripsException extends Exception
 {
     public function __construct(string $cityName, int $tripsCount)
     {
-        $message = "Cannot delete city '{$cityName}' because it has {$tripsCount} associated trip(s). Please remove or reassign the trips first.";
-        
+        $message = sprintf("Cannot delete city '%s' because it has %d associated trip(s). Please remove or reassign the trips first.", $cityName, $tripsCount);
+
         parent::__construct($message);
     }
 }
