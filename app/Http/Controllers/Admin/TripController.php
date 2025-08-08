@@ -14,6 +14,7 @@ use App\Http\Requests\Admin\Trip\IndexTripsRequest;
 use App\Http\Requests\Admin\Trip\UpdateTripRequest;
 use App\Models\Trip;
 use App\Queries\Builders\BusQueryBuilder;
+use App\Queries\Builders\CityQueryBuilder;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -30,9 +31,17 @@ class TripController extends Controller
     {
         $listData = $request->toDTO();
         $trips = $action->execute($listData);
+        
+        $buses = (new BusQueryBuilder(['id', 'bus_code', 'capacity', 'type']))
+            ->active()
+            ->get();
+            
+        $cities = (new CityQueryBuilder())->getSelectOptions();
 
         return Inertia::render('admin/trips/index', [
             'trips' => $trips,
+            'buses' => $buses,
+            'cities' => $cities,
             'filters' => [
                 'search' => $listData->search,
                 'bus_id' => $listData->busId,
@@ -50,8 +59,11 @@ class TripController extends Controller
             ->active()
             ->get();
 
+        $cities = (new CityQueryBuilder())->getSelectOptions();
+
         return Inertia::render('admin/trips/create', [
             'buses' => $buses,
+            'cities' => $cities,
         ]);
     }
 
@@ -76,9 +88,12 @@ class TripController extends Controller
             ->active()
             ->get();
 
+        $cities = (new CityQueryBuilder())->getSelectOptions();
+
         return Inertia::render('admin/trips/edit', [
-            'trip' => $trip->load('bus'),
+            'trip' => $trip->load(['bus', 'originCity', 'destinationCity']),
             'buses' => $buses,
+            'cities' => $cities,
         ]);
     }
 

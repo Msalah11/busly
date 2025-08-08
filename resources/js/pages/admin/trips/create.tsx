@@ -13,12 +13,13 @@ import { type Bus as BusType } from '@/types';
 
 interface CreateTripProps {
     buses: BusType[];
+    cities: Record<string, string>;
 }
 
-export default function CreateTrip({ buses }: CreateTripProps) {
+export default function CreateTrip({ buses, cities }: CreateTripProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        origin: '',
-        destination: '',
+        origin_city_id: '',
+        destination_city_id: '',
         departure_time: '',
         arrival_time: '',
         price: '',
@@ -76,29 +77,45 @@ export default function CreateTrip({ buses }: CreateTripProps) {
                                 <form onSubmit={submit} className="space-y-6">
                                     <div className="grid gap-6 md:grid-cols-2">
                                         <div className="space-y-2">
-                                            <Label htmlFor="origin">Origin</Label>
-                                            <Input
-                                                id="origin"
-                                                type="text"
-                                                value={data.origin}
-                                                onChange={(e) => setData('origin', e.target.value)}
-                                                placeholder="Enter departure city"
-                                                required
-                                            />
-                                            <InputError message={errors.origin} />
+                                            <Label htmlFor="origin_city_id">Origin City</Label>
+                                            <Select
+                                                value={data.origin_city_id}
+                                                onValueChange={(value) => setData('origin_city_id', value)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select origin city" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.entries(cities).map(([id, name]) => (
+                                                        <SelectItem key={id} value={id}>
+                                                            {name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <InputError message={errors.origin_city_id} />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="destination">Destination</Label>
-                                            <Input
-                                                id="destination"
-                                                type="text"
-                                                value={data.destination}
-                                                onChange={(e) => setData('destination', e.target.value)}
-                                                placeholder="Enter arrival city"
-                                                required
-                                            />
-                                            <InputError message={errors.destination} />
+                                            <Label htmlFor="destination_city_id">Destination City</Label>
+                                            <Select
+                                                value={data.destination_city_id}
+                                                onValueChange={(value) => setData('destination_city_id', value)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select destination city" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.entries(cities)
+                                                        .filter(([id]) => id !== data.origin_city_id)
+                                                        .map(([id, name]) => (
+                                                            <SelectItem key={id} value={id}>
+                                                                {name}
+                                                            </SelectItem>
+                                                        ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <InputError message={errors.destination_city_id} />
                                         </div>
                                     </div>
 

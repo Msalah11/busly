@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Bus;
+use App\Models\City;
 use App\Models\Trip;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -31,9 +32,25 @@ class TripFactory extends Factory
         $departureTime = Carbon::createFromFormat('H:i', $this->faker->time('H:i'));
         $arrivalTime = $departureTime->copy()->addHours($this->faker->numberBetween(2, 8));
 
+        // Use existing cities if available, otherwise create new ones
+        $existingCities = City::pluck('id')->toArray();
+        
+        if (count($existingCities) >= 2) {
+            // Use existing cities
+            $shuffled = collect($existingCities)->shuffle();
+            $originCityId = $shuffled->first();
+            $destinationCityId = $shuffled->skip(1)->first();
+        } else {
+            // Create new cities with unique codes
+            $originCity = City::factory()->create();
+            $destinationCity = City::factory()->create();
+            $originCityId = $originCity->id;
+            $destinationCityId = $destinationCity->id;
+        }
+
         return [
-            'origin' => $this->faker->city(),
-            'destination' => $this->faker->city(),
+            'origin_city_id' => $originCityId,
+            'destination_city_id' => $destinationCityId,
             'departure_time' => $departureTime,
             'arrival_time' => $arrivalTime,
             'price' => $this->faker->randomFloat(2, 50, 500),
@@ -63,13 +80,27 @@ class TripFactory extends Factory
     }
 
     /**
-     * Create a trip with specific origin and destination.
+     * Create a trip with specific origin and destination cities.
      */
-    public function route(string $origin, string $destination): static
+    public function route(City $originCity, City $destinationCity): static
     {
         return $this->state(fn (array $attributes): array => [
-            'origin' => $origin,
-            'destination' => $destination,
+            'origin_city_id' => $originCity->id,
+            'destination_city_id' => $destinationCity->id,
+        ]);
+    }
+
+    /**
+     * Create a trip between specific cities by name (for backward compatibility).
+     */
+    public function routeByName(string $originName, string $destinationName): static
+    {
+        $originCity = City::where('name', $originName)->first() ?? City::factory()->create(['name' => $originName]);
+        $destinationCity = City::where('name', $destinationName)->first() ?? City::factory()->create(['name' => $destinationName]);
+
+        return $this->state(fn (array $attributes): array => [
+            'origin_city_id' => $originCity->id,
+            'destination_city_id' => $destinationCity->id,
         ]);
     }
 
@@ -138,3 +169,4 @@ class TripFactory extends Factory
         ]);
     }
 }
+

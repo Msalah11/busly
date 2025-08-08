@@ -235,7 +235,7 @@ export default function ReservationsIndex({ reservations, filters, statusOptions
                                                 <TableCell className="font-medium">
                                                     <div>
                                                         <div className="font-medium">
-                                                            {reservation.trip?.origin} → {reservation.trip?.destination}
+                                                            {reservation.trip?.route || `${reservation.trip?.origin_city?.name || 'Unknown'} → ${reservation.trip?.destination_city?.name || 'Unknown'}`}
                                                         </div>
                                                         <div className="text-sm text-muted-foreground">
                                                             {reservation.trip?.departure_time && formatTime(reservation.trip.departure_time)} • {reservation.trip?.bus?.bus_code}

@@ -28,8 +28,8 @@ class UpdateTripRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'origin' => ['required', 'string', 'max:255'],
-            'destination' => ['required', 'string', 'max:255', 'different:origin'],
+            'origin_city_id' => ['required', 'integer', 'exists:cities,id'],
+            'destination_city_id' => ['required', 'integer', 'exists:cities,id', 'different:origin_city_id'],
             'departure_time' => ['required', 'date_format:H:i'],
             'arrival_time' => ['required', 'date_format:H:i'],
             'price' => ['required', 'numeric', 'min:0', 'max:9999.99'],

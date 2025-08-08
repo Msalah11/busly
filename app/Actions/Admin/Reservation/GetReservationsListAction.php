@@ -21,7 +21,7 @@ class GetReservationsListAction
     public function execute(AdminReservationListData $data): LengthAwarePaginator
     {
         $query = (new ReservationQueryBuilder)
-            ->with(['user:id,name,email', 'trip:id,origin,destination,departure_time,price,bus_id', 'trip.bus:id,bus_code'])
+            ->with(['user:id,name,email', 'trip:id,origin_city_id,destination_city_id,departure_time,price,bus_id', 'trip.bus:id,bus_code', 'trip.originCity:id,name,code', 'trip.destinationCity:id,name,code'])
             ->when($data->hasSearch(), fn ($query) => $query->search($data->search, ['reservation_code']))
             ->when($data->hasStatus(), fn ($query) => $query->withStatus($data->status))
             ->when($data->hasUser(), fn ($query) => $query->forUser($data->userId))

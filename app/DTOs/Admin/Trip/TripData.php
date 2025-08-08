@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 final readonly class TripData
 {
     public function __construct(
-        public string $origin,
-        public string $destination,
+        public int $originCityId,
+        public int $destinationCityId,
         public Carbon $departureTime,
         public Carbon $arrivalTime,
         public float $price,
@@ -25,8 +25,8 @@ final readonly class TripData
     public static function fromRequest(Request $request): self
     {
         return new self(
-            origin: (string) $request->string('origin'),
-            destination: (string) $request->string('destination'),
+            originCityId: $request->integer('origin_city_id'),
+            destinationCityId: $request->integer('destination_city_id'),
             departureTime: Carbon::createFromFormat('H:i', (string) $request->string('departure_time')),
             arrivalTime: Carbon::createFromFormat('H:i', (string) $request->string('arrival_time')),
             price: (float) (string) $request->string('price'),
@@ -41,8 +41,8 @@ final readonly class TripData
     public function toArray(): array
     {
         return [
-            'origin' => $this->origin,
-            'destination' => $this->destination,
+            'origin_city_id' => $this->originCityId,
+            'destination_city_id' => $this->destinationCityId,
             'departure_time' => $this->departureTime,
             'arrival_time' => $this->arrivalTime,
             'price' => $this->price,

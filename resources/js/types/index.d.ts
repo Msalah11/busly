@@ -53,19 +53,34 @@ export interface Bus {
     updated_at: string;
 }
 
+export interface City {
+    id: number;
+    name: string;
+    code: string;
+    latitude: number | null;
+    longitude: number | null;
+    is_active: boolean;
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface Trip {
     id: number;
-    origin: string;
-    destination: string;
+    origin_city_id: number;
+    destination_city_id: number;
     departure_time: string;
     arrival_time: string;
     price: string;
     bus_id: number;
     is_active: boolean;
     available_seats?: number;
+    route?: string; // Computed attribute from cities
     created_at: string;
     updated_at: string;
     bus?: Bus;
+    origin_city?: City;
+    destination_city?: City;
 }
 
 export interface Reservation {

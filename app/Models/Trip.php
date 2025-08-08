@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * Represents a bus trip from origin to destination.
  *
  * @property int $id
- * @property string $origin
- * @property string $destination
+ * @property int $origin_city_id
+ * @property int $destination_city_id
  * @property string $departure_time
  * @property string $arrival_time
  * @property float $price
@@ -39,8 +39,8 @@ class Trip extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'origin',
-        'destination',
+        'origin_city_id',
+        'destination_city_id',
         'departure_time',
         'arrival_time',
         'price',
@@ -66,6 +66,26 @@ class Trip extends Model
     public function bus(): BelongsTo
     {
         return $this->belongsTo(Bus::class);
+    }
+
+    /**
+     * Get the origin city for this trip.
+     *
+     * @return BelongsTo<City, $this>
+     */
+    public function originCity(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'origin_city_id');
+    }
+
+    /**
+     * Get the destination city for this trip.
+     *
+     * @return BelongsTo<City, $this>
+     */
+    public function destinationCity(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'destination_city_id');
     }
 
     /**
@@ -131,5 +151,23 @@ class Trip extends Model
         $reservedSeats = $query->sum('seats_count');
 
         return max(0, $totalSeats - $reservedSeats);
+    }
+
+    /**
+     * Get the route display string (Origin -> Destination).
+     */
+    public function getRouteAttribute(): string
+    {
+        if ($this->relationLoaded('originCity') && $this->relationLoaded('destinationCity')) {
+            $originName = $this->originCity->name ?? 'Unknown';
+            $destinationName = $this->destinationCity->name ?? 'Unknown';
+            return "{$originName} -> {$destinationName}";
+        }
+
+        // Fallback: load relationships if not loaded
+        $this->load(['originCity', 'destinationCity']);
+        $originName = $this->originCity->name ?? 'Unknown';
+        $destinationName = $this->destinationCity->name ?? 'Unknown';
+        return "{$originName} -> {$destinationName}";
     }
 }

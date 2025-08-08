@@ -15,9 +15,10 @@ import AppLayout from '@/layouts/app-layout';
 interface EditTripProps {
     trip: Trip;
     buses: BusType[];
+    cities: Record<string, string>;
 }
 
-export default function EditTrip({ trip, buses }: EditTripProps) {
+export default function EditTrip({ trip, buses, cities }: EditTripProps) {
     // Helper function to format time for display
     const formatTime = (time: string) => {
         if (!time || !time.includes(':')) return time;
@@ -35,8 +36,8 @@ export default function EditTrip({ trip, buses }: EditTripProps) {
     };
 
     const { data, setData, patch, processing, errors } = useForm({
-        origin: trip.origin,
-        destination: trip.destination,
+        origin_city_id: trip.origin_city_id.toString(),
+        destination_city_id: trip.destination_city_id.toString(),
         departure_time: trip.departure_time,
         arrival_time: trip.arrival_time,
         price: trip.price,
@@ -67,7 +68,7 @@ export default function EditTrip({ trip, buses }: EditTripProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Edit Trip: ${trip.origin} → ${trip.destination}`} />
+            <Head title={`Edit Trip: ${trip.route || 'Trip'}`} />
             
             <div className="flex-1 space-y-6 p-4 md:p-6">
                 <div className="flex items-center justify-between">
@@ -80,7 +81,7 @@ export default function EditTrip({ trip, buses }: EditTripProps) {
                             </Link>
                             <div>
                                 <h1 className="text-2xl font-bold tracking-tight">
-                                    Edit Trip: {trip.origin} → {trip.destination}
+                                    Edit Trip: {trip.route || `${trip.origin_city?.name || 'Origin'} → ${trip.destination_city?.name || 'Destination'}`}
                                 </h1>
                                 <p className="text-muted-foreground">
                                     Update trip information and settings
@@ -103,29 +104,45 @@ export default function EditTrip({ trip, buses }: EditTripProps) {
                                 <form onSubmit={submit} className="space-y-6">
                                     <div className="grid gap-6 md:grid-cols-2">
                                         <div className="space-y-2">
-                                            <Label htmlFor="origin">Origin</Label>
-                                            <Input
-                                                id="origin"
-                                                type="text"
-                                                value={data.origin}
-                                                onChange={(e) => setData('origin', e.target.value)}
-                                                placeholder="Enter departure city"
-                                                required
-                                            />
-                                            <InputError message={errors.origin} />
+                                            <Label htmlFor="origin_city_id">Origin City</Label>
+                                            <Select
+                                                value={data.origin_city_id}
+                                                onValueChange={(value) => setData('origin_city_id', value)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select origin city" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.entries(cities).map(([id, name]) => (
+                                                        <SelectItem key={id} value={id}>
+                                                            {name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <InputError message={errors.origin_city_id} />
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="destination">Destination</Label>
-                                            <Input
-                                                id="destination"
-                                                type="text"
-                                                value={data.destination}
-                                                onChange={(e) => setData('destination', e.target.value)}
-                                                placeholder="Enter arrival city"
-                                                required
-                                            />
-                                            <InputError message={errors.destination} />
+                                            <Label htmlFor="destination_city_id">Destination City</Label>
+                                            <Select
+                                                value={data.destination_city_id}
+                                                onValueChange={(value) => setData('destination_city_id', value)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select destination city" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.entries(cities)
+                                                        .filter(([id]) => id !== data.origin_city_id)
+                                                        .map(([id, name]) => (
+                                                            <SelectItem key={id} value={id}>
+                                                                {name}
+                                                            </SelectItem>
+                                                        ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <InputError message={errors.destination_city_id} />
                                         </div>
                                     </div>
 
@@ -230,7 +247,7 @@ export default function EditTrip({ trip, buses }: EditTripProps) {
                                         <MapPin className="h-6 w-6 text-primary" />
                                     </div>
                                     <div>
-                                        <p className="font-medium">{trip.origin} → {trip.destination}</p>
+                                        <p className="font-medium">{trip.route || `${trip.origin_city?.name || 'Origin'} → ${trip.destination_city?.name || 'Destination'}`}</p>
                                         <p className="text-sm text-muted-foreground">{formatPrice(trip.price)}</p>
                                     </div>
                                 </div>

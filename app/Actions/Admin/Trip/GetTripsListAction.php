@@ -22,13 +22,17 @@ final class GetTripsListAction
     {
         return (new TripQueryBuilder)
             ->orderByDeparture()
-            ->with(['bus:id,bus_code,type,capacity'])
-            ->when($data->hasSearch(), fn ($query): \App\Queries\Builders\TripQueryBuilder => $query->search($data->search, ['origin', 'destination']))
+            ->with([
+                'bus:id,bus_code,type,capacity',
+                'originCity:id,name,code',
+                'destinationCity:id,name,code'
+            ])
+            ->when($data->hasSearch(), fn ($query): \App\Queries\Builders\TripQueryBuilder => $query->searchByRoute($data->search))
             ->when($data->hasActive(), fn ($query): \App\Queries\Builders\TripQueryBuilder => $query->active($data->active))
-            ->when($data->hasBusId(), fn ($query) => $query->where('bus_id', $data->busId))
+            ->when($data->hasBusId(), fn ($query): \App\Queries\Builders\TripQueryBuilder => $query->forBus($data->busId))
             ->paginate(
                 perPage: $data->perPage,
-                columns: ['id', 'origin', 'destination', 'departure_time', 'arrival_time', 'price', 'bus_id', 'is_active', 'created_at'],
+                columns: ['id', 'origin_city_id', 'destination_city_id', 'departure_time', 'arrival_time', 'price', 'bus_id', 'is_active', 'created_at'],
                 pageName: 'page',
                 page: $data->page
             );

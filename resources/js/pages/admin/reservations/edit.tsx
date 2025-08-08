@@ -197,7 +197,7 @@ export default function EditReservation({ reservation, users, trips, statusOptio
                                                             <div className="flex flex-col">
                                                                 <div className="flex items-center space-x-1">
                                                                     <MapPin className="h-3 w-3" />
-                                                                    <span>{trip.origin} → {trip.destination}</span>
+                                                                    <span>{trip.route || `${trip.origin_city?.name || 'Unknown'} → ${trip.destination_city?.name || 'Unknown'}`}</span>
                                                                 </div>
                                                                 <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                                                                     <div className="flex items-center space-x-1">
@@ -379,7 +379,7 @@ export default function EditReservation({ reservation, users, trips, statusOptio
                                     <div className="space-y-2">
                                         <div className="flex items-center space-x-2">
                                             <MapPin className="h-4 w-4 text-muted-foreground" />
-                                            <span className="font-medium">{selectedTrip.origin} → {selectedTrip.destination}</span>
+                                            <span className="font-medium">{selectedTrip.route || `${selectedTrip.origin_city?.name || 'Unknown'} → ${selectedTrip.destination_city?.name || 'Unknown'}`}</span>
                                         </div>
                                         <div className="flex items-center space-x-2">
                                             <Clock className="h-4 w-4 text-muted-foreground" />

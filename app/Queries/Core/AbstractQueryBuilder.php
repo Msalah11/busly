@@ -20,12 +20,19 @@ use InvalidArgumentException;
  * @method \Illuminate\Database\Eloquent\Collection<int, TModel> get(array<int, string> $columns = ['*'])
  * @method TModel|null first(array<int, string> $columns = ['*'])
  * @method static with(array<int, string>|string $relations)
- * @method static where(string $column, mixed $operator = null, mixed $value = null, string $boolean = 'and')
+ * @method static where(string|callable $column, mixed $operator = null, mixed $value = null, string $boolean = 'and')
  * @method static whereIn(string $column, mixed $values, string $boolean = 'and', bool $not = false)
+ * @method static orWhere(string $column, mixed $operator = null, mixed $value = null)
+ * @method static whereHas(string $relation, callable $callback = null)
+ * @method static orWhereHas(string $relation, callable $callback = null)
+ * @method static when(mixed $value, callable $callback)
  * @method static orderBy(string $column, string $direction = 'asc')
  * @method static limit(int $value)
+ * @method static take(int $value)
  * @method static skip(int $value)
  * @method static count(string $columns = '*')
+ * @method TModel findOrFail(int|string $id, array<int, string> $columns = ['*'])
+ * @method mixed sum(string $column)
  */
 abstract class AbstractQueryBuilder
 {

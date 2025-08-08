@@ -64,11 +64,16 @@ final class ReservationController extends Controller
             ->active()
             ->get();
 
-        $trips = (new TripQueryBuilder(['id', 'origin', 'destination', 'departure_time', 'price', 'bus_id', 'is_active']))
-            ->with(['bus:id,bus_code,capacity', 'reservations' => function ($query) {
-                $query->where('status', '!=', \App\Enums\ReservationStatus::CANCELLED)
-                      ->select('trip_id', 'seats_count');
-            }])
+        $trips = (new TripQueryBuilder(['id', 'origin_city_id', 'destination_city_id', 'departure_time', 'price', 'bus_id', 'is_active']))
+            ->with([
+                'bus:id,bus_code,capacity',
+                'originCity:id,name,code',
+                'destinationCity:id,name,code',
+                'reservations' => function ($query) {
+                    $query->where('status', '!=', ReservationStatus::CANCELLED)
+                          ->select('trip_id', 'seats_count');
+                }
+            ])
             ->active()
             ->orderByDeparture()
             ->get();
@@ -113,11 +118,16 @@ final class ReservationController extends Controller
             ->orderByName()
             ->get();
 
-        $trips = (new TripQueryBuilder(['id', 'origin', 'destination', 'departure_time', 'price', 'bus_id', 'is_active']))
-            ->with(['bus:id,bus_code,capacity', 'reservations' => function ($query) {
-                $query->where('status', '!=', \App\Enums\ReservationStatus::CANCELLED)
-                      ->select('trip_id', 'seats_count');
-            }])
+        $trips = (new TripQueryBuilder(['id', 'origin_city_id', 'destination_city_id', 'departure_time', 'price', 'bus_id', 'is_active']))
+            ->with([
+                'bus:id,bus_code,capacity',
+                'originCity:id,name,code',
+                'destinationCity:id,name,code',
+                'reservations' => function ($query) {
+                    $query->where('status', '!=', \App\Enums\ReservationStatus::CANCELLED)
+                          ->select('trip_id', 'seats_count');
+                }
+            ])
             ->active()
             ->orderByDeparture()
             ->get()

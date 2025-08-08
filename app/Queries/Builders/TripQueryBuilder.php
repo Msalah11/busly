@@ -14,6 +14,7 @@ use App\Queries\Filters\Trip\ActiveTripFilter;
 use App\Queries\Filters\Trip\AvailableSeatsFilter;
 use App\Queries\Filters\Trip\DepartureDateFilter;
 use App\Queries\Filters\Trip\RouteFilter;
+use App\Queries\Filters\Trip\RouteSearchFilter;
 
 use App\Queries\Modifiers\Limiting\LimitModifier;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
@@ -64,6 +65,20 @@ final class TripQueryBuilder extends AbstractQueryBuilder
     }
 
     /**
+     * Search trips by city names (origin and destination).
+     *
+     * @return $this
+     */
+    public function searchByRoute(?string $searchTerm): self
+    {
+        if ($searchTerm !== null) {
+            $this->addFilter(new RouteSearchFilter($searchTerm));
+        }
+
+        return $this;
+    }
+
+    /**
      * Filter trips by route (origin and destination).
      *
      * @return $this
@@ -85,6 +100,20 @@ final class TripQueryBuilder extends AbstractQueryBuilder
     public function active(bool $active = true): self
     {
         $this->addFilter(new ActiveTripFilter($active));
+
+        return $this;
+    }
+
+    /**
+     * Filter trips by bus ID.
+     *
+     * @return $this
+     */
+    public function forBus(?int $busId): self
+    {
+        if ($busId !== null) {
+            $this->where('bus_id', $busId);
+        }
 
         return $this;
     }

@@ -10,13 +10,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MapPin, Edit, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
-import { type Trip } from '@/types';
+import { type City } from '@/types';
 
-import { type Bus as BusType } from '@/types';
-
-interface TripsIndexProps {
-    trips: {
-        data: Trip[];
+interface CitiesIndexProps {
+    cities: {
+        data: City[];
         current_page: number;
         last_page: number;
         per_page: number;
@@ -27,86 +25,55 @@ interface TripsIndexProps {
             active: boolean;
         }>;
     };
-    buses: BusType[];
-    cities: Record<string, string>;
     filters: {
         search?: string;
-        bus_id?: number;
-        active?: boolean;
+        is_active?: boolean;
     };
 }
 
-export default function TripsIndex({ trips, buses, cities, filters }: TripsIndexProps) {
+export default function CitiesIndex({ cities, filters }: CitiesIndexProps) {
     const { flash } = usePage().props as { flash?: { success?: string; error?: string } };
     const [search, setSearch] = useState(filters.search || '');
-    const [busId, setBusId] = useState(filters.bus_id?.toString() || 'all');
-    const [active, setActive] = useState(filters.active !== undefined ? (filters.active ? 'active' : 'inactive') : 'all');
-    const [deleteTrip, setDeleteTrip] = useState<Trip | null>(null);
+    const [status, setStatus] = useState(filters.is_active === undefined ? 'all' : filters.is_active ? 'active' : 'inactive');
+    const [deleteCity, setDeleteCity] = useState<City | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleSearch = () => {
         const params: Record<string, string> = {};
         if (search) params.search = search;
-        if (busId && busId !== 'all') params.bus_id = busId;
-        if (active && active !== 'all') params.active = active === 'active' ? '1' : '0';
+        if (status === 'active') params.is_active = '1';
+        if (status === 'inactive') params.is_active = '0';
 
-        router.get(route('admin.trips.index'), params, {
+        router.get(route('admin.cities.index'), params, {
             preserveState: true,
             replace: true,
         });
     };
 
-    const handleDelete = async () => {
-        if (!deleteTrip) return;
-
+    const handleDeleteCity = async () => {
+        if (!deleteCity) return;
+        
         setIsDeleting(true);
-        try {
-            await router.delete(route('admin.trips.destroy', deleteTrip.id), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    setDeleteTrip(null);
-                },
-                onFinish: () => {
-                    setIsDeleting(false);
-                },
-            });
-        } catch {
-            setIsDeleting(false);
-        }
-    };
-
-    const formatTime = (time: string) => {
-        if (!time || !time.includes(':')) return time;
-        
-        // Create a date object with today's date and the provided time
-        const [hours, minutes] = time.split(':');
-        const date = new Date();
-        date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
-        
-        return date.toLocaleTimeString('en-EG', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
+        router.delete(route('admin.cities.destroy', deleteCity.id), {
+            onSuccess: () => {
+                setDeleteCity(null);
+            },
+            onFinish: () => {
+                setIsDeleting(false);
+            },
         });
-    };
-
-    const formatPrice = (price: string) => {
-        return new Intl.NumberFormat('en-EG', {
-            style: 'currency',
-            currency: 'EGP',
-        }).format(parseFloat(price));
     };
 
     const breadcrumbs = [
         { title: 'Dashboard', href: route('dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
-        { title: 'Trip Management', href: route('admin.trips.index') },
+        { title: 'City Management', href: route('admin.cities.index') },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Trip Management" />
-
+            <Head title="City Management" />
+            
             <div className="flex-1 space-y-6 p-4 md:p-6">
                 {flash?.success && (
                     <div className="rounded-md bg-green-50 p-4">
@@ -126,15 +93,15 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
 
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Trip Management</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">City Management</h1>
                         <p className="text-muted-foreground">
-                            Manage your bus trips, routes, and schedules
+                            Manage cities available for bus travel routes
                         </p>
                     </div>
-                    <Link href={route('admin.trips.create')}>
+                    <Link href={route('admin.cities.create')}>
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
-                            Add Trip
+                            Add City
                         </Button>
                     </Link>
                 </div>
@@ -143,7 +110,7 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
                     <CardHeader>
                         <CardTitle>Filters</CardTitle>
                         <CardDescription>
-                            Search and filter trips by various criteria
+                            Search and filter cities by various criteria
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -156,20 +123,7 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
                                 />
                             </div>
                             <div className="flex gap-2">
-                                <Select value={busId} onValueChange={setBusId}>
-                                    <SelectTrigger className="w-40">
-                                        <SelectValue placeholder="All Buses" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Buses</SelectItem>
-                                        {buses.map((bus) => (
-                                            <SelectItem key={bus.id} value={bus.id.toString()}>
-                                                {bus.bus_code} ({bus.type})
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <Select value={active} onValueChange={setActive}>
+                                <Select value={status} onValueChange={setStatus}>
                                     <SelectTrigger className="w-32">
                                         <SelectValue placeholder="Status" />
                                     </SelectTrigger>
@@ -190,9 +144,9 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
 
                 <Card className='p-0 shadow-none border-none'>
                     <CardHeader className='p-0'>
-                        <CardTitle>Trips ({trips.total})</CardTitle>
+                        <CardTitle>Cities ({cities.total})</CardTitle>
                         <CardDescription>
-                            A list of all trips in your system
+                            A list of all cities available for bus routes
                         </CardDescription>
                     </CardHeader>
                     <CardContent className='p-0'>
@@ -200,57 +154,53 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Route</TableHead>
-                                        <TableHead>Bus</TableHead>
-                                        <TableHead>Schedule</TableHead>
-                                        <TableHead>Price</TableHead>
+                                        <TableHead>City Name</TableHead>
+                                        <TableHead>Code</TableHead>
+                                        <TableHead>Coordinates</TableHead>
                                         <TableHead>Status</TableHead>
+                                        <TableHead>Sort Order</TableHead>
                                         <TableHead>Created</TableHead>
                                         <TableHead className="w-[70px]">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {trips.data.length === 0 ? (
+                                    {cities.data.length === 0 ? (
                                         <TableRow>
                                             <TableCell colSpan={7} className="h-24 text-center">
                                                 <div className="flex flex-col items-center justify-center space-y-2">
                                                     <MapPin className="h-8 w-8 text-muted-foreground" />
-                                                    <p className="text-sm text-muted-foreground">No trips found</p>
+                                                    <p className="text-sm text-muted-foreground">No cities found</p>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
                                     ) : (
-                                        trips.data.map((trip) => (
-                                            <TableRow key={trip.id}>
-                                                <TableCell className="font-medium">
-                                                    {trip.route || `${trip.origin_city?.name || 'Unknown'} → ${trip.destination_city?.name || 'Unknown'}`}
-                                                </TableCell>
+                                        cities.data.map((city) => (
+                                            <TableRow key={city.id}>
+                                                <TableCell className="font-medium">{city.name}</TableCell>
                                                 <TableCell>
-                                                    <div>
-                                                        <div className="font-medium">{trip.bus?.bus_code}</div>
-                                                        <div className="text-sm text-muted-foreground">
-                                                            {trip.bus?.type} • {trip.bus?.capacity} seats
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div>
-                                                        <div className="font-medium">
-                                                            {formatTime(trip.departure_time)}
-                                                        </div>
-                                                        <div className="text-sm text-muted-foreground">
-                                                            Arrives: {formatTime(trip.arrival_time)}
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>{formatPrice(trip.price)}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant={trip.is_active ? 'default' : 'destructive'}>
-                                                        {trip.is_active ? 'Active' : 'Inactive'}
+                                                    <Badge variant="outline">
+                                                        {city.code}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
-                                                    {new Date(trip.created_at).toLocaleDateString('en-EG')}
+                                                    {city.latitude && city.longitude ? (
+                                                        <span className="text-sm text-muted-foreground">
+                                                            {Number(city.latitude).toFixed(4)}, {Number(city.longitude).toFixed(4)}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-sm text-muted-foreground">—</span>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge variant={city.is_active ? 'default' : 'destructive'}>
+                                                        {city.is_active ? 'Active' : 'Inactive'}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="text-sm text-muted-foreground">{city.sort_order}</span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {new Date(city.created_at).toLocaleDateString('en-EG')}
                                                 </TableCell>
                                                 <TableCell>
                                                     <DropdownMenu>
@@ -262,14 +212,14 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end">
                                                             <DropdownMenuItem asChild>
-                                                                <Link href={route('admin.trips.edit', trip.id)}>
+                                                                <Link href={route('admin.cities.edit', city.id)}>
                                                                     <Edit className="mr-2 h-4 w-4" />
                                                                     Edit
                                                                 </Link>
                                                             </DropdownMenuItem>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem
-                                                                onClick={() => setDeleteTrip(trip)}
+                                                                onClick={() => setDeleteCity(city)}
                                                                 className="text-red-600 focus:text-red-600"
                                                             >
                                                                 <Trash2 className="mr-2 h-4 w-4" />
@@ -285,16 +235,15 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
                             </Table>
                         </div>
 
-                        {/* Pagination */}
-                        {trips.last_page > 1 && (
+                        {cities.last_page > 1 && (
                             <div className="flex items-center justify-between space-x-2 py-4">
                                 <div className="text-sm text-muted-foreground">
-                                    Showing {((trips.current_page - 1) * trips.per_page) + 1} to{' '}
-                                    {Math.min(trips.current_page * trips.per_page, trips.total)} of{' '}
-                                    {trips.total} results
+                                    Showing {((cities.current_page - 1) * cities.per_page) + 1} to{' '}
+                                    {Math.min(cities.current_page * cities.per_page, cities.total)} of{' '}
+                                    {cities.total} results
                                 </div>
                                 <div className="flex space-x-2">
-                                    {trips.links.map((link, index) => (
+                                    {cities.links.map((link, index) => (
                                         link.url ? (
                                             <Button
                                                 key={index}
@@ -320,31 +269,26 @@ export default function TripsIndex({ trips, buses, cities, filters }: TripsIndex
                 </Card>
             </div>
 
-            {/* Delete Dialog */}
-            <Dialog open={!!deleteTrip} onOpenChange={() => setDeleteTrip(null)}>
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={!!deleteCity} onOpenChange={() => setDeleteCity(null)}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Delete Trip</DialogTitle>
+                        <DialogTitle>Delete City</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete the trip from{' '}
-                            <strong>{deleteTrip?.origin}</strong> to{' '}
-                            <strong>{deleteTrip?.destination}</strong>? This action cannot be undone.
+                            Are you sure you want to delete city <strong>{deleteCity?.name}</strong>? 
+                            This action cannot be undone and will permanently remove the city from available routes.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setDeleteTrip(null)}
-                            disabled={isDeleting}
-                        >
+                        <Button variant="outline" onClick={() => setDeleteCity(null)}>
                             Cancel
                         </Button>
                         <Button 
                             variant="destructive" 
-                            onClick={handleDelete}
+                            onClick={handleDeleteCity}
                             disabled={isDeleting}
                         >
-                            {isDeleting ? 'Deleting...' : 'Delete Trip'}
+                            {isDeleting ? 'Deleting...' : 'Delete City'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
