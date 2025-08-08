@@ -74,7 +74,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
         it('includes user and trip relationship data', function (): void {
             $user = User::factory()->create(['name' => 'John Doe']);
             $bus = Bus::factory()->create(['bus_code' => 'BUS123']);
-            $trip = Trip::factory()->forBus($bus)->route('Cairo', 'Alexandria')->create();
+            $trip = Trip::factory()->forBus($bus)->routeByName('Cairo', 'Alexandria')->create();
             Reservation::factory()->for($user)->for($trip)->create();
 
             $response = $this->get(route('admin.reservations.index'));
@@ -85,7 +85,7 @@ describe('Admin Reservation CRUD Operations', function (): void {
                     ->has('reservations.data.0.user')
                     ->has('reservations.data.0.trip')
                     ->where('reservations.data.0.user.name', 'John Doe')
-                    ->where('reservations.data.0.trip.origin', 'Cairo')
+                    ->where('reservations.data.0.trip.route', 'Cairo -> Alexandria')
                     ->where('reservations.data.0.trip.bus.bus_code', 'BUS123')
                 );
         });

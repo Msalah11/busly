@@ -41,9 +41,13 @@ class TripFactory extends Factory
             $originCityId = $shuffled->first();
             $destinationCityId = $shuffled->skip(1)->first();
         } else {
-            // Create new cities with unique codes
-            $originCity = City::factory()->create();
-            $destinationCity = City::factory()->create();
+            // Create new cities with unique codes by using sequence
+            $originCity = City::factory()->sequence(
+                ['name' => 'Origin City ' . fake()->unique()->randomNumber(5), 'code' => fake()->unique()->lexify('???')]
+            )->create();
+            $destinationCity = City::factory()->sequence(
+                ['name' => 'Destination City ' . fake()->unique()->randomNumber(5), 'code' => fake()->unique()->lexify('???')]
+            )->create();
             $originCityId = $originCity->id;
             $destinationCityId = $destinationCity->id;
         }
@@ -95,8 +99,21 @@ class TripFactory extends Factory
      */
     public function routeByName(string $originName, string $destinationName): static
     {
-        $originCity = City::where('name', $originName)->first() ?? City::factory()->create(['name' => $originName]);
-        $destinationCity = City::where('name', $destinationName)->first() ?? City::factory()->create(['name' => $destinationName]);
+        $originCity = City::where('name', $originName)->first();
+        if (!$originCity) {
+            $originCity = City::factory()->create([
+                'name' => $originName,
+                'code' => strtoupper(substr($originName, 0, 3)) . fake()->unique()->randomNumber(2)
+            ]);
+        }
+        
+        $destinationCity = City::where('name', $destinationName)->first();
+        if (!$destinationCity) {
+            $destinationCity = City::factory()->create([
+                'name' => $destinationName,
+                'code' => strtoupper(substr($destinationName, 0, 3)) . fake()->unique()->randomNumber(2)
+            ]);
+        }
 
         return $this->state(fn (array $attributes): array => [
             'origin_city_id' => $originCity->id,

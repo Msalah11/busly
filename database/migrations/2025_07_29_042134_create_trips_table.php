@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table): void {
             $table->id();
-            $table->string('origin');
-            $table->string('destination');
+            $table->foreignId('origin_city_id')->constrained('cities');
+            $table->foreignId('destination_city_id')->constrained('cities');            
             $table->time('departure_time');
             $table->time('arrival_time');
             $table->decimal('price', 8, 2);
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->index(['origin', 'destination', 'departure_time']);
+            $table->index(['departure_time', 'origin_city_id', 'destination_city_id']);
         });
     }
 

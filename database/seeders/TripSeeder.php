@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Bus;
+use App\Models\City;
 use App\Models\Trip;
 use Illuminate\Database\Seeder;
 
@@ -20,34 +21,49 @@ class TripSeeder extends Seeder
 
         if ($activeBuses->isEmpty()) {
             $this->command->warn('No active buses found. Please run BusSeeder first.');
-
             return;
         }
 
-        // Popular Egyptian routes with realistic trip data
+        // Get active cities for creating routes
+        $cities = City::where('is_active', true)->get();
+
+        if ($cities->isEmpty()) {
+            $this->command->warn('No active cities found. Please run CitySeeder first.');
+            return;
+        }
+
+        // Create a mapping of city names to IDs for easier route definition
+        $cityMap = $cities->pluck('id', 'name')->toArray();
+
+        // Popular Egyptian routes with realistic trip data using city IDs
         $routes = [
             // Cairo routes
-            ['origin' => 'Cairo', 'destination' => 'Alexandria', 'distance_km' => 220],
-            ['origin' => 'Cairo', 'destination' => 'Luxor', 'distance_km' => 670],
-            ['origin' => 'Cairo', 'destination' => 'Aswan', 'distance_km' => 880],
-            ['origin' => 'Cairo', 'destination' => 'Hurghada', 'distance_km' => 460],
-            ['origin' => 'Cairo', 'destination' => 'Sharm El Sheikh', 'distance_km' => 490],
-            ['origin' => 'Cairo', 'destination' => 'Marsa Matrouh', 'distance_km' => 290],
+            ['origin_city_id' => $cityMap['Cairo'] ?? null, 'destination_city_id' => $cityMap['Alexandria'] ?? null, 'distance_km' => 220],
+            ['origin_city_id' => $cityMap['Cairo'] ?? null, 'destination_city_id' => $cityMap['Luxor'] ?? null, 'distance_km' => 670],
+            ['origin_city_id' => $cityMap['Cairo'] ?? null, 'destination_city_id' => $cityMap['Aswan'] ?? null, 'distance_km' => 880],
+            ['origin_city_id' => $cityMap['Cairo'] ?? null, 'destination_city_id' => $cityMap['Hurghada'] ?? null, 'distance_km' => 460],
+            ['origin_city_id' => $cityMap['Cairo'] ?? null, 'destination_city_id' => $cityMap['Sharm El Sheikh'] ?? null, 'distance_km' => 490],
+            ['origin_city_id' => $cityMap['Cairo'] ?? null, 'destination_city_id' => $cityMap['Marsa Matruh'] ?? null, 'distance_km' => 290],
 
             // Alexandria routes
-            ['origin' => 'Alexandria', 'destination' => 'Cairo', 'distance_km' => 220],
-            ['origin' => 'Alexandria', 'destination' => 'Marsa Matrouh', 'distance_km' => 240],
+            ['origin_city_id' => $cityMap['Alexandria'] ?? null, 'destination_city_id' => $cityMap['Cairo'] ?? null, 'distance_km' => 220],
+            ['origin_city_id' => $cityMap['Alexandria'] ?? null, 'destination_city_id' => $cityMap['Marsa Matruh'] ?? null, 'distance_km' => 240],
 
             // Upper Egypt routes
-            ['origin' => 'Luxor', 'destination' => 'Cairo', 'distance_km' => 670],
-            ['origin' => 'Luxor', 'destination' => 'Aswan', 'distance_km' => 210],
-            ['origin' => 'Aswan', 'destination' => 'Cairo', 'distance_km' => 880],
-            ['origin' => 'Aswan', 'destination' => 'Luxor', 'distance_km' => 210],
+            ['origin_city_id' => $cityMap['Luxor'] ?? null, 'destination_city_id' => $cityMap['Cairo'] ?? null, 'distance_km' => 670],
+            ['origin_city_id' => $cityMap['Luxor'] ?? null, 'destination_city_id' => $cityMap['Aswan'] ?? null, 'distance_km' => 210],
+            ['origin_city_id' => $cityMap['Aswan'] ?? null, 'destination_city_id' => $cityMap['Cairo'] ?? null, 'distance_km' => 880],
+            ['origin_city_id' => $cityMap['Aswan'] ?? null, 'destination_city_id' => $cityMap['Luxor'] ?? null, 'distance_km' => 210],
 
             // Red Sea routes
-            ['origin' => 'Hurghada', 'destination' => 'Cairo', 'distance_km' => 460],
-            ['origin' => 'Sharm El Sheikh', 'destination' => 'Cairo', 'distance_km' => 490],
+            ['origin_city_id' => $cityMap['Hurghada'] ?? null, 'destination_city_id' => $cityMap['Cairo'] ?? null, 'distance_km' => 460],
+            ['origin_city_id' => $cityMap['Sharm El Sheikh'] ?? null, 'destination_city_id' => $cityMap['Cairo'] ?? null, 'distance_km' => 490],
         ];
+
+        // Filter out routes where cities don't exist
+        $routes = array_filter($routes, function ($route) {
+            return $route['origin_city_id'] !== null && $route['destination_city_id'] !== null;
+        });
 
         // Time slots for different types of trips
         $timeSlots = [
@@ -84,8 +100,8 @@ class TripSeeder extends Seeder
                 $price = max($price, 50.00);
 
                 Trip::create([
-                    'origin' => $route['origin'],
-                    'destination' => $route['destination'],
+                    'origin_city_id' => $route['origin_city_id'],
+                    'destination_city_id' => $route['destination_city_id'],
                     'departure_time' => $departureTime,
                     'arrival_time' => $arrivalTime,
                     'price' => $price,
@@ -95,37 +111,10 @@ class TripSeeder extends Seeder
             }
         }
 
-        // Create additional random trips using factory
-        $remainingBuses = $activeBuses->shuffle();
-
-        // Morning trips
-        Trip::factory()
-            ->count(10)
-            ->morning()
-            ->sequence(fn ($sequence): array => [
-                'bus_id' => $remainingBuses->get($sequence->index % $remainingBuses->count())->id,
-            ])
-            ->create();
-
-        // Evening trips
-        Trip::factory()
-            ->count(8)
-            ->evening()
-            ->sequence(fn ($sequence): array => [
-                'bus_id' => $remainingBuses->get($sequence->index % $remainingBuses->count())->id,
-            ])
-            ->create();
-
-        // Some inactive trips (past or cancelled)
-        Trip::factory()
-            ->count(5)
-            ->inactive()
-            ->sequence(fn ($sequence): array => [
-                'bus_id' => $remainingBuses->get($sequence->index % $remainingBuses->count())->id,
-            ])
-            ->create();
-
-        $this->command->info('Created trips for '.count($routes).' routes with multiple time slots.');
-        $this->command->info('Total trips created: '.Trip::count());
+        // Log the results
+        $totalTrips = Trip::count();
+        $routeCount = count($routes);
+        $this->command->info("Created trips for {$routeCount} routes with multiple time slots.");
+        $this->command->info("Total trips created: {$totalTrips}");
     }
 }

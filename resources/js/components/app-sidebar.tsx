@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Bus, Calendar, Folder, LayoutGrid, Route, Shield, Users } from 'lucide-react';
+import { BookOpen, Bus, Calendar, Folder, LayoutGrid, MapPin, Route, Shield, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const getMainNavItems = (isAdmin: boolean): NavItem[] => {
@@ -31,6 +31,11 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
             title: 'Bus Management',
             href: route('admin.buses.index'),
             icon: Bus,
+        });
+        items.push({
+            title: 'City Management',
+            href: route('admin.cities.index'),
+            icon: MapPin,
         });
         items.push({
             title: 'Trip Management',

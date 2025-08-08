@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\Role;
 use App\Models\Bus;
+use App\Models\City;
 use App\Models\Trip;
 use App\Models\User;
 
@@ -40,9 +41,9 @@ describe('Admin Trip CRUD Operations', function (): void {
                 );
         });
 
-        it('can filter trips by search term (origin/destination)', function (): void {
-            $trip1 = Trip::factory()->route('Cairo', 'Alexandria')->create();
-            $trip2 = Trip::factory()->route('Luxor', 'Aswan')->create();
+        it('can filter trips by search term (city names)', function (): void {
+            $trip1 = Trip::factory()->routeByName('Cairo', 'Alexandria')->create();
+            $trip2 = Trip::factory()->routeByName('Luxor', 'Aswan')->create();
 
             $response = $this->get(route('admin.trips.index', ['search' => 'Cairo']));
 
@@ -50,7 +51,7 @@ describe('Admin Trip CRUD Operations', function (): void {
                 ->assertInertia(fn ($page) => $page
                     ->component('admin/trips/index')
                     ->has('trips.data', 1)
-                    ->where('trips.data.0.origin', 'Cairo')
+                    ->where('trips.data.0.origin_city.name', 'Cairo')
                 );
         });
 
@@ -97,10 +98,12 @@ describe('Admin Trip CRUD Operations', function (): void {
 
         it('can create a new trip with valid data', function (): void {
             $bus = Bus::factory()->create();
+            $originCity = City::factory()->create(['name' => 'Cairo']);
+            $destinationCity = City::factory()->create(['name' => 'Alexandria']);
 
             $tripData = [
-                'origin' => 'Cairo',
-                'destination' => 'Alexandria',
+                'origin_city_id' => $originCity->id,
+                'destination_city_id' => $destinationCity->id,
                 'departure_time' => '08:00',
                 'arrival_time' => '12:00',
                 'price' => 150.50,
@@ -114,8 +117,8 @@ describe('Admin Trip CRUD Operations', function (): void {
                 ->assertSessionHas('success', 'Trip created successfully.');
 
             $this->assertDatabaseHas('trips', [
-                'origin' => 'Cairo',
-                'destination' => 'Alexandria',
+                'origin_city_id' => $originCity->id,
+                'destination_city_id' => $destinationCity->id,
                 'price' => 150.50,
                 'bus_id' => $bus->id,
                 'is_active' => true,
@@ -126,8 +129,8 @@ describe('Admin Trip CRUD Operations', function (): void {
             $response = $this->post(route('admin.trips.store'), []);
 
             $response->assertSessionHasErrors([
-                'origin',
-                'destination',
+                'origin_city_id',
+                'destination_city_id',
                 'departure_time',
                 'arrival_time',
                 'price',
@@ -135,12 +138,13 @@ describe('Admin Trip CRUD Operations', function (): void {
             ]);
         });
 
-        it('validates origin and destination are different', function (): void {
+        it('validates origin and destination cities are different', function (): void {
             $bus = Bus::factory()->create();
+            $city = City::factory()->create();
 
             $response = $this->post(route('admin.trips.store'), [
-                'origin' => 'Cairo',
-                'destination' => 'Cairo',
+                'origin_city_id' => $city->id,
+                'destination_city_id' => $city->id, // Same city - should fail
                 'departure_time' => '08:00',
                 'arrival_time' => '12:00',
                 'price' => 150.50,
@@ -148,7 +152,7 @@ describe('Admin Trip CRUD Operations', function (): void {
                 'is_active' => true,
             ]);
 
-            $response->assertSessionHasErrors(['destination']);
+            $response->assertSessionHasErrors(['destination_city_id']);
         });
 
         it('validates arrival time is after departure time', function (): void {
@@ -233,18 +237,22 @@ describe('Admin Trip CRUD Operations', function (): void {
         it('can update a trip with valid data', function (): void {
             $oldBus = Bus::factory()->create();
             $newBus = Bus::factory()->create();
+            $oldOriginCity = City::factory()->create(['name' => 'Old Origin']);
+            $oldDestinationCity = City::factory()->create(['name' => 'Old Destination']);
+            $newOriginCity = City::factory()->create(['name' => 'New Origin']);
+            $newDestinationCity = City::factory()->create(['name' => 'New Destination']);
 
             $trip = Trip::factory()->create([
-                'origin' => 'Old Origin',
-                'destination' => 'Old Destination',
+                'origin_city_id' => $oldOriginCity->id,
+                'destination_city_id' => $oldDestinationCity->id,
                 'price' => 100.00,
                 'bus_id' => $oldBus->id,
                 'is_active' => false,
             ]);
 
             $updateData = [
-                'origin' => 'New Origin',
-                'destination' => 'New Destination',
+                'origin_city_id' => $newOriginCity->id,
+                'destination_city_id' => $newDestinationCity->id,
                 'departure_time' => '09:00',
                 'arrival_time' => '15:00',
                 'price' => 200.00,
@@ -259,8 +267,8 @@ describe('Admin Trip CRUD Operations', function (): void {
 
             $this->assertDatabaseHas('trips', [
                 'id' => $trip->id,
-                'origin' => 'New Origin',
-                'destination' => 'New Destination',
+                'origin_city_id' => $newOriginCity->id,
+                'destination_city_id' => $newDestinationCity->id,
                 'price' => 200.00,
                 'bus_id' => $newBus->id,
                 'is_active' => true,
@@ -269,10 +277,11 @@ describe('Admin Trip CRUD Operations', function (): void {
 
         it('validates all fields when updating', function (): void {
             $trip = Trip::factory()->create();
+            $city = City::factory()->create();
 
             $response = $this->patch(route('admin.trips.update', $trip), [
-                'origin' => 'Same City',
-                'destination' => 'Same City', // Should fail - same as origin
+                'origin_city_id' => $city->id,
+                'destination_city_id' => $city->id, // Should fail - same as origin
                 'departure_time' => '15:00',
                 'arrival_time' => '10:00', // Should fail - before departure
                 'price' => -100, // Should fail - negative
@@ -280,7 +289,7 @@ describe('Admin Trip CRUD Operations', function (): void {
             ]);
 
             $response->assertSessionHasErrors([
-                'destination',
+                'destination_city_id',
                 'arrival_time',
                 'price',
                 'bus_id',
@@ -310,10 +319,12 @@ describe('Admin Trip CRUD Operations', function (): void {
     describe('Trip Time Handling', function (): void {
         it('correctly stores and retrieves time data', function (): void {
             $bus = Bus::factory()->create();
+            $originCity = City::factory()->create(['name' => 'Cairo']);
+            $destinationCity = City::factory()->create(['name' => 'Alexandria']);
 
             $tripData = [
-                'origin' => 'Cairo',
-                'destination' => 'Alexandria',
+                'origin_city_id' => $originCity->id,
+                'destination_city_id' => $destinationCity->id,
                 'departure_time' => '08:30',
                 'arrival_time' => '14:45',
                 'price' => 150.50,

@@ -101,7 +101,7 @@ describe('GetReservationsListAction', function (): void {
     it('includes user and trip relationship data', function (): void {
         $user = User::factory()->create(['name' => 'John Doe', 'email' => 'john@example.com']);
         $bus = Bus::factory()->create(['bus_code' => 'BUS123']);
-        $trip = Trip::factory()->forBus($bus)->route('Cairo', 'Alexandria')->create();
+        $trip = Trip::factory()->forBus($bus)->routeByName('Cairo', 'Alexandria')->create();
         
         Reservation::factory()->for($user)->for($trip)->create();
 
@@ -112,7 +112,7 @@ describe('GetReservationsListAction', function (): void {
         expect($reservation->user)->not->toBeNull();
         expect($reservation->trip)->not->toBeNull();
         expect($reservation->user->name)->toBe('John Doe');
-        expect($reservation->trip->origin)->toBe('Cairo');
+        expect($reservation->trip->route)->toContain('Cairo');
         expect($reservation->trip->bus)->not->toBeNull();
         expect($reservation->trip->bus->bus_code)->toBe('BUS123');
     });

@@ -16,7 +16,7 @@ it('can be constructed with default columns', function (): void {
 });
 
 it('can be constructed with custom columns', function (): void {
-    $builder = new TripQueryBuilder(['id', 'origin', 'destination']);
+    $builder = new TripQueryBuilder(['id', 'origin_city_id', 'destination_city_id']);
 
     expect($builder)->toBeInstanceOf(TripQueryBuilder::class);
 });
@@ -146,13 +146,15 @@ describe('parameter validation', function (): void {
         expect((new TripQueryBuilder)->search(''))->toBeInstanceOf(TripQueryBuilder::class);
         expect((new TripQueryBuilder)->search(null))->toBeInstanceOf(TripQueryBuilder::class);
 
-        // Different columns
-        expect((new TripQueryBuilder)->search('Cairo', ['origin']))->toBeInstanceOf(TripQueryBuilder::class);
-        expect((new TripQueryBuilder)->search('Cairo', ['origin', 'destination']))->toBeInstanceOf(TripQueryBuilder::class);
+        // Different columns (note: search method still exists for backward compatibility)
+        expect((new TripQueryBuilder)->search('Cairo', ['origin_city_id']))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search('Cairo', ['origin_city_id', 'destination_city_id']))->toBeInstanceOf(TripQueryBuilder::class);
 
         // Case sensitivity
-        expect((new TripQueryBuilder)->search('cairo', ['origin'], true))->toBeInstanceOf(TripQueryBuilder::class);
-        expect((new TripQueryBuilder)->search('cairo', ['origin'], false))->toBeInstanceOf(TripQueryBuilder::class);
+        expect((new TripQueryBuilder)->search('cairo', ['origin_city_id'], true))->toBeInstanceOf(TripQueryBuilder::class);
+        
+        // New city-based search
+        expect((new TripQueryBuilder)->searchByRoute('Cairo'))->toBeInstanceOf(TripQueryBuilder::class);
     });
 
     it('byRoute method accepts various combinations', function (): void {
