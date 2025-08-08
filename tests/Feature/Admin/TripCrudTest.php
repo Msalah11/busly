@@ -98,8 +98,14 @@ describe('Admin Trip CRUD Operations', function (): void {
 
         it('can create a new trip with valid data', function (): void {
             $bus = Bus::factory()->create();
-            $originCity = City::factory()->create(['name' => 'Cairo']);
-            $destinationCity = City::factory()->create(['name' => 'Alexandria']);
+            $originCity = City::factory()->create([
+                'name' => 'Test Origin City',
+                'code' => 'TOC' . fake()->unique()->randomNumber(2)
+            ]);
+            $destinationCity = City::factory()->create([
+                'name' => 'Test Destination City',
+                'code' => 'TDC' . fake()->unique()->randomNumber(2)
+            ]);
 
             $tripData = [
                 'origin_city_id' => $originCity->id,
@@ -237,10 +243,22 @@ describe('Admin Trip CRUD Operations', function (): void {
         it('can update a trip with valid data', function (): void {
             $oldBus = Bus::factory()->create();
             $newBus = Bus::factory()->create();
-            $oldOriginCity = City::factory()->create(['name' => 'Old Origin']);
-            $oldDestinationCity = City::factory()->create(['name' => 'Old Destination']);
-            $newOriginCity = City::factory()->create(['name' => 'New Origin']);
-            $newDestinationCity = City::factory()->create(['name' => 'New Destination']);
+            $oldOriginCity = City::factory()->create([
+                'name' => 'Old Origin City',
+                'code' => 'OOC' . fake()->unique()->randomNumber(2)
+            ]);
+            $oldDestinationCity = City::factory()->create([
+                'name' => 'Old Destination City',
+                'code' => 'ODC' . fake()->unique()->randomNumber(2)
+            ]);
+            $newOriginCity = City::factory()->create([
+                'name' => 'New Origin City',
+                'code' => 'NOC' . fake()->unique()->randomNumber(2)
+            ]);
+            $newDestinationCity = City::factory()->create([
+                'name' => 'New Destination City',
+                'code' => 'NDC' . fake()->unique()->randomNumber(2)
+            ]);
 
             $trip = Trip::factory()->create([
                 'origin_city_id' => $oldOriginCity->id,
@@ -319,8 +337,14 @@ describe('Admin Trip CRUD Operations', function (): void {
     describe('Trip Time Handling', function (): void {
         it('correctly stores and retrieves time data', function (): void {
             $bus = Bus::factory()->create();
-            $originCity = City::factory()->create(['name' => 'Cairo']);
-            $destinationCity = City::factory()->create(['name' => 'Alexandria']);
+            $originCity = City::factory()->create([
+                'name' => 'Test Time Origin',
+                'code' => 'TTO' . fake()->unique()->randomNumber(2)
+            ]);
+            $destinationCity = City::factory()->create([
+                'name' => 'Test Time Destination',
+                'code' => 'TTD' . fake()->unique()->randomNumber(2)
+            ]);
 
             $tripData = [
                 'origin_city_id' => $originCity->id,
