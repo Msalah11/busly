@@ -32,8 +32,9 @@ final class CreateReservationAction
             $trip = (new TripQueryBuilder)
                 ->with('bus')
                 ->active()
-                ->lockForUpdate() // This prevents race conditions
-                ->findOrFail($data->tripId);
+                ->findOrFail($data->tripId)
+                ->build()
+                ->lockForUpdate(); // This prevents race conditions
 
             // Validate that the trip departure is in the future
             if ($trip->departure_time <= now()) {

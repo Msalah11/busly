@@ -51,11 +51,6 @@ final class TripController extends Controller
      */
     public function show(Trip $trip): Response
     {
-        // Only show active and upcoming trips
-        if (!$trip->is_active || $trip->departure_time <= now()) {
-            abort(404);
-        }
-
         $trip->load([
             'bus',
             'originCity',

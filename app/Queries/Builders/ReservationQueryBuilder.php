@@ -224,11 +224,11 @@ final class ReservationQueryBuilder extends AbstractQueryBuilder
     public function getStatistics(): array
     {
         return [
-            'total' => (new self)->get()->count(),
-            'confirmed' => (new self)->confirmed()->get()->count(),
-            'cancelled' => (new self)->cancelled()->get()->count(),
-            'today' => (new self)->createdToday()->get()->count(),
-            'this_week' => (new self)->recentDays(7)->get()->count(),
+            'total' => (new self)->build()->count(),
+            'confirmed' => (new self)->confirmed()->build()->count(),
+            'cancelled' => (new self)->cancelled()->build()->count(),
+            'today' => (new self)->createdToday()->build()->count(),
+            'this_week' => (new self)->recentDays(7)->build()->count(),
         ];
     }
 }

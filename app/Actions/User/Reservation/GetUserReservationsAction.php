@@ -26,33 +26,17 @@ final class GetUserReservationsAction
                 'trip.bus:id,bus_code,capacity',
                 'trip.originCity:id,name,code',
                 'trip.destinationCity:id,name,code',
-            ])
-            ->forUser($userId);
+            ]);
 
         // Apply filters
-        if ($data->search !== null) {
-            $query->search($data->search);
-        }
-
-        if ($data->status !== null) {
-            $query->withStatus($data->status);
-        }
-
-        if ($data->startDate !== null && $data->endDate !== null) {
-            $query->dateRange($data->startDate, $data->endDate);
-        }
-
-        if ($data->upcomingOnly) {
-            $query->upcoming();
-        }
+        $query->when($data->status !== null, fn($query) => $query->withStatus($data->status));
+        $query->when($data->startDate !== null && $data->endDate !== null, fn($query) => $query->dateRange($data->startDate, $data->endDate));
+        $query->when($data->upcomingOnly, fn($query) => $query->upcoming());
 
         // Apply sorting
-        if ($data->sortBy === 'departure_time') {
-            $query->orderByDeparture($data->sortDirection);
-        } else {
-            $query->orderByCreated($data->sortDirection);
-        }
+        $query->when($data->sortBy === 'departure_time', fn($query) => $query->orderByDeparture($data->sortDirection));
+        $query->when($data->sortBy !== 'departure_time', fn($query) => $query->orderByCreated($data->sortDirection));
 
-        return $query->paginate($data->perPage);
+        return $query->forUser($userId)->paginate($data->perPage);
     }
 }

@@ -72,11 +72,11 @@ final class GetUserDashboardDataAction
         $userReservationStats = (new ReservationQueryBuilder)->forUser($userId)->getStatistics();
         
         // Add user-specific additional statistics
-        $userReservationStats['upcoming'] = (new ReservationQueryBuilder)->forUser($userId)->upcoming()->confirmed()->get()->count();
+        $userReservationStats['upcoming'] = (new ReservationQueryBuilder)->forUser($userId)->upcoming()->confirmed()->build()->count();
         $userReservationStats['completed'] = (new ReservationQueryBuilder)->forUser($userId)->confirmed()
-            // ->join('trips', 'reservations.trip_id', '=', 'trips.id')
-            // ->where('trips.departure_time', '<', now())
-            ->get()
+            ->build()
+            ->join('trips', 'reservations.trip_id', '=', 'trips.id')
+            ->where('trips.departure_time', '<', now())
             ->count();
         
         $stats = $userReservationStats;

@@ -34,28 +34,15 @@ final class SearchTripsAction
             ->upcoming(); // Only show future trips
 
         // Apply search filters
-        if ($data->originCityId !== null) {
-            $query->fromCity($data->originCityId);
-        }
+        $query->when($data->originCityId !== null, fn($query) => $query->fromCity($data->originCityId));
+        $query->when($data->destinationCityId !== null, fn($query) => $query->toCity($data->destinationCityId));
 
-        if ($data->destinationCityId !== null) {
-            $query->toCity($data->destinationCityId);
-        }
-
-        if ($data->departureDate !== null) {
-            $query->onDate($data->departureDate);
-        }
-
-        if ($data->maxPrice !== null) {
-            $query->maxPrice($data->maxPrice);
-        }
+        $query->when($data->departureDate !== null, fn($query) => $query->onDate($data->departureDate));
+        $query->when($data->maxPrice !== null, fn($query) => $query->maxPrice($data->maxPrice));
 
         // Apply sorting
-        if ($data->sortBy === 'price') {
-            $query->orderByPrice($data->sortDirection);
-        } else {
-            $query->orderByDeparture($data->sortDirection);
-        }
+        $query->when($data->sortBy === 'price', fn($query) => $query->orderByPrice($data->sortDirection));
+        $query->when($data->sortBy !== 'price', fn($query) => $query->orderByDeparture($data->sortDirection));
 
         $trips = $query->paginate($data->perPage);
 
@@ -68,11 +55,7 @@ final class SearchTripsAction
         });
 
         // If min_seats filter is specified, filter the collection
-        if ($data->minSeats !== null) {
-            $trips->getCollection()->filter(function ($trip) use ($data): bool {
-                return $trip->available_seats >= $data->minSeats;
-            });
-        }
+        $trips->getCollection()->filter(fn($trip) => $trip->available_seats >= $data->minSeats);
 
         return $trips;
     }
