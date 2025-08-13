@@ -78,7 +78,7 @@ export default function CreateReservation({ users, trips, statusOptions }: Creat
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
         { title: 'Reservation Management', href: route('admin.reservations.index') },
         { title: 'Create Reservation', href: route('admin.reservations.create') },

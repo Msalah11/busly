@@ -60,7 +60,7 @@ export default function EditTrip({ trip, buses, cities }: EditTripProps) {
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
         { title: 'Trip Management', href: route('admin.trips.index') },
         { title: 'Edit Trip', href: route('admin.trips.edit', trip.id) },

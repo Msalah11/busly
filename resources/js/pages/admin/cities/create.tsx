@@ -27,7 +27,7 @@ export default function CreateCity() {
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
         { title: 'City Management', href: route('admin.cities.index') },
         { title: 'Create City', href: route('admin.cities.create') },

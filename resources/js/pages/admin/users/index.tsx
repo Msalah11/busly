@@ -71,7 +71,7 @@ export default function AdminUsers({ users, filters }: AdminUsersProps) {
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
         { title: 'Users', href: route('admin.users.index') },
     ];

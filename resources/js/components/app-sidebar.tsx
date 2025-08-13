@@ -4,24 +4,19 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Bus, Calendar, Folder, LayoutGrid, MapPin, Route, Shield, Users } from 'lucide-react';
+import { BookOpen, Bus, Calendar, Folder, LayoutGrid, MapPin, Route, Shield, Ticket, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const getMainNavItems = (isAdmin: boolean): NavItem[] => {
     const items: NavItem[] = [
         {
             title: 'Dashboard',
-            href: route('dashboard'),
+            href: route(isAdmin ? 'admin.dashboard' : 'user.dashboard'),
             icon: LayoutGrid,
         },
     ];
 
     if (isAdmin) {
-        items.push({
-            title: 'Admin Dashboard',
-            href: route('admin.dashboard'),
-            icon: Shield,
-        });
         items.push({
             title: 'Users Management',
             href: route('admin.users.index'),
@@ -46,6 +41,17 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
             title: 'Reservation Management',
             href: route('admin.reservations.index'),
             icon: Calendar,
+        });
+    } else {
+        items.push({
+            title: 'Browse Trips',
+            href: route('user.trips.index'),
+            icon: Route,
+        });
+        items.push({
+            title: 'My Reservations',
+            href: route('user.reservations.index'),
+            icon: Ticket,
         });
     }
 
@@ -76,7 +82,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={route('dashboard')} prefetch>
+                            <Link href={route(isAdmin ? 'admin.dashboard' : 'user.dashboard')} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

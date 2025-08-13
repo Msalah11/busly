@@ -30,7 +30,7 @@ export default function EditBus({ bus }: EditBusProps) {
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
         { title: 'Bus Management', href: route('admin.buses.index') },
         { title: 'Edit Bus', href: route('admin.buses.edit', bus.id) },

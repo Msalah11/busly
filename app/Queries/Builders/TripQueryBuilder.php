@@ -133,6 +133,77 @@ final class TripQueryBuilder extends AbstractQueryBuilder
     }
 
     /**
+     * Filter trips by departure date (alias for byDepartureDate).
+     *
+     * @param  CarbonInterface|string|null  $date
+     * @return $this
+     */
+    public function onDate($date): self
+    {
+        return $this->byDepartureDate($date);
+    }
+
+    /**
+     * Filter trips from a specific city.
+     *
+     * @return $this
+     */
+    public function fromCity(int $cityId): self
+    {
+        $this->where('origin_city_id', $cityId);
+
+        return $this;
+    }
+
+    /**
+     * Filter trips to a specific city.
+     *
+     * @return $this
+     */
+    public function toCity(int $cityId): self
+    {
+        $this->where('destination_city_id', $cityId);
+
+        return $this;
+    }
+
+    /**
+     * Filter trips by maximum price.
+     *
+     * @return $this
+     */
+    public function maxPrice(float $price): self
+    {
+        $this->where('price', '<=', $price);
+
+        return $this;
+    }
+
+    /**
+     * Filter trips that haven't departed yet.
+     *
+     * @return $this
+     */
+    public function upcoming(): self
+    {
+        $this->where('departure_time', '>', now());
+
+        return $this;
+    }
+
+    /**
+     * Order trips by price.
+     *
+     * @return $this
+     */
+    public function orderByPrice(string $direction = 'asc'): self
+    {
+        $this->orderBy('price', $direction);
+
+        return $this;
+    }
+
+    /**
      * Filter trips by departure date range.
      *
      * @param  CarbonInterface|string|null  $startDate

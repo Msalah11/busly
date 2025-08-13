@@ -105,7 +105,7 @@ export default function EditReservation({ reservation, users, trips, statusOptio
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
         { title: 'Reservation Management', href: route('admin.reservations.index') },
         { title: 'Edit Reservation', href: route('admin.reservations.edit', reservation.id) },

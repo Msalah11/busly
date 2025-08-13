@@ -122,7 +122,7 @@ export default function AdminDashboard({ users, stats, recentBuses, recentTrips 
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
     ];
 

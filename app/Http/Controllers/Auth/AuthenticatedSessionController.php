@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
 
         $action->execute($loginData, $request);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('user.dashboard', absolute: false));
     }
 
     /**

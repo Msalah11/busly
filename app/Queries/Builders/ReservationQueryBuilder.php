@@ -15,6 +15,7 @@ use App\Queries\Filters\Reservation\TripReservationFilter;
 use App\Queries\Filters\Reservation\UpcomingReservationFilter;
 use App\Queries\Filters\Reservation\UserReservationFilter;
 use App\Queries\Modifiers\Ordering\OrderByCreatedModifier;
+use App\Queries\Modifiers\Ordering\OrderReservationsByDepartureModifier;
 use App\Queries\Modifiers\Relations\RelationModifier;
 use Carbon\CarbonInterface;
 
@@ -145,6 +146,18 @@ final class ReservationQueryBuilder extends AbstractQueryBuilder
     }
 
     /**
+     * Filter reservations by date range (alias for reservedBetween).
+     *
+     * @param  CarbonInterface|string|null  $startDate
+     * @param  CarbonInterface|string|null  $endDate
+     * @return $this
+     */
+    public function dateRange($startDate = null, $endDate = null, bool $inclusive = true): self
+    {
+        return $this->reservedBetween($startDate, $endDate, $inclusive);
+    }
+
+    /**
      * Order reservations by creation date.
      *
      * @return $this
@@ -152,6 +165,18 @@ final class ReservationQueryBuilder extends AbstractQueryBuilder
     public function orderByCreated(string $direction = 'desc'): self
     {
         $this->addFilter(new OrderByCreatedModifier($direction));
+
+        return $this;
+    }
+
+    /**
+     * Order reservations by trip departure time.
+     *
+     * @return $this
+     */
+    public function orderByDeparture(string $direction = 'asc'): self
+    {
+        $this->addFilter(new OrderReservationsByDepartureModifier($direction));
 
         return $this;
     }

@@ -65,7 +65,7 @@ export default function BusesIndex({ buses, filters }: BusesIndexProps) {
     };
 
     const breadcrumbs = [
-        { title: 'Dashboard', href: route('dashboard') },
+        { title: 'Dashboard', href: route('admin.dashboard') },
         { title: 'Admin Dashboard', href: route('admin.dashboard') },
         { title: 'Bus Management', href: route('admin.buses.index') },
     ];

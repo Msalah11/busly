@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Bus, Calendar, Folder, LayoutGrid, Menu, Route, Search, Shield, Users } from 'lucide-react';
+import { BookOpen, Bus, Calendar, Folder, LayoutGrid, MapPin, Menu, Route, Search, Ticket, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -19,17 +19,12 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
     const items: NavItem[] = [
         {
             title: 'Dashboard',
-            href: route('dashboard'),
+            href: route(isAdmin ? 'admin.dashboard' : 'user.dashboard'),
             icon: LayoutGrid,
         },
     ];
 
     if (isAdmin) {
-        items.push({
-            title: 'Admin Dashboard',
-            href: route('admin.dashboard'),
-            icon: Shield,
-        });
         items.push({
             title: 'Users Management',
             href: route('admin.users.index'),
@@ -41,6 +36,11 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
             icon: Bus,
         });
         items.push({
+            title: 'City Management',
+            href: route('admin.cities.index'),
+            icon: MapPin,
+        });
+        items.push({
             title: 'Trip Management',
             href: route('admin.trips.index'),
             icon: Route,
@@ -49,6 +49,17 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
             title: 'Reservation Management',
             href: route('admin.reservations.index'),
             icon: Calendar,
+        });
+    } else {
+        items.push({
+            title: 'Browse Trips',
+            href: route('user.trips.index'),
+            icon: Route,
+        });
+        items.push({
+            title: 'My Reservations',
+            href: route('user.reservations.index'),
+            icon: Ticket,
         });
     }
 
