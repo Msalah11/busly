@@ -183,22 +183,17 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                                                 <span className="text-sm font-medium">Departure Date</span>
                                             </div>
                                             <p className="text-lg">
-                                                {reservation.trip?.departure_time && new Date(reservation.trip.departure_time).toLocaleDateString('en-EG', {
-                                                    weekday: 'long',
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}
+                                                {reservation.trip?.departure_time && formatTime(reservation.trip.departure_time)}
                                             </p>
                                         </div>
 
                                         <div className="space-y-2">
                                             <div className="flex items-center space-x-2">
                                                 <Clock className="h-4 w-4 text-muted-foreground" />
-                                                <span className="text-sm font-medium">Departure Time</span>
+                                                <span className="text-sm font-medium">Arrival Time</span>
                                             </div>
                                             <p className="text-lg">
-                                                {reservation.trip?.departure_time && formatTime(reservation.trip.departure_time)}
+                                                {reservation.trip?.arrival_time && formatTime(reservation.trip.arrival_time)}
                                             </p>
                                         </div>
                                     </div>
