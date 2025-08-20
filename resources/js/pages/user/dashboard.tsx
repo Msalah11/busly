@@ -43,10 +43,10 @@ interface Reservation {
 }
 
 interface Stats {
-    total_reservations: number;
-    upcoming_reservations: number;
-    completed_trips: number;
-    cancelled_reservations: number;
+    total: number;
+    upcoming: number;
+    completed: number;
+    cancelled: number;
 }
 
 interface UserDashboardProps {
@@ -139,7 +139,7 @@ export default function UserDashboard({
                                 <Ticket className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">{stats.total_reservations}</div>
+                                <div className="text-2xl font-bold">{stats.total}</div>
                                 <p className="text-xs text-muted-foreground">
                                     All your bookings
                                 </p>
@@ -152,7 +152,7 @@ export default function UserDashboard({
                                 <Calendar className="h-4 w-4 text-blue-600" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold text-blue-600">{stats.upcoming_reservations}</div>
+                                <div className="text-2xl font-bold text-blue-600">{stats.upcoming}</div>
                                 <p className="text-xs text-muted-foreground">
                                     Confirmed future trips
                                 </p>
@@ -165,7 +165,7 @@ export default function UserDashboard({
                                 <CheckCircle className="h-4 w-4 text-green-600" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold text-green-600">{stats.completed_trips}</div>
+                                <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
                                 <p className="text-xs text-muted-foreground">
                                     Successfully traveled
                                 </p>
@@ -178,7 +178,7 @@ export default function UserDashboard({
                                 <XCircle className="h-4 w-4 text-red-600" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold text-red-600">{stats.cancelled_reservations}</div>
+                                <div className="text-2xl font-bold text-red-600">{stats.cancelled}</div>
                                 <p className="text-xs text-muted-foreground">
                                     Cancelled bookings
                                 </p>

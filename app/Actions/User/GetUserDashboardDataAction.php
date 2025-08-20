@@ -32,8 +32,9 @@ final class GetUserDashboardDataAction
             ])
             ->forUser($userId)
             ->orderByCreated()
-            ->get()
-            ->take(5);
+            ->build()
+            ->limit(5)
+            ->get();
 
         // Get user's upcoming reservations
         $upcomingReservations = (new ReservationQueryBuilder)
@@ -47,8 +48,9 @@ final class GetUserDashboardDataAction
             ->upcoming()
             ->confirmed()
             ->orderByDeparture()
-            ->get()
-            ->take(5);
+            ->build()
+            ->limit(5)
+            ->get();
 
         // Get available trips for quick booking
         $availableTrips = (new TripQueryBuilder)
@@ -61,8 +63,9 @@ final class GetUserDashboardDataAction
             ->upcoming()
             ->withAvailableSeats(1)
             ->orderByDeparture()
+            ->build()
+            ->limit(6)
             ->get()
-            ->take(6)
             ->map(function ($trip): \App\Models\Trip {
                 $trip->available_seats = $trip->getAvailableSeatsAttribute();
                 return $trip;
@@ -72,10 +75,10 @@ final class GetUserDashboardDataAction
         $userReservationStats = (new ReservationQueryBuilder)->forUser($userId)->getStatistics();
         
         // Add user-specific additional statistics
-        $userReservationStats['upcoming'] = (new ReservationQueryBuilder)->forUser($userId)->upcoming()->confirmed()->build()->count();
+        $userReservationStats['upcoming'] = (new ReservationQueryBuilder)->forUser($userId)->upcoming()->confirmed()->get()->count();
         $userReservationStats['completed'] = (new ReservationQueryBuilder)->forUser($userId)->confirmed()
-            ->build()
-            ->join('trips', 'reservations.trip_id', '=', 'trips.id')
+        ->build()    
+        ->join('trips', 'reservations.trip_id', '=', 'trips.id')
             ->where('trips.departure_time', '<', now())
             ->count();
         
