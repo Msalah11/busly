@@ -1,61 +1,160 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Busly
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is the backend of the Busly project, a bus reservation application.
+It was created to help people book bus trips across multiple cities in a more organized and efficient way.
 
-## About Laravel
+## Installation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Busly backend is a Laravel application; it's built on top of Laravel 12 and uses a MySQL database.
+It's recommended to use Laravel Sail to run the application, but you can also run it locally if you have MySQL installed.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/busly.git
+   cd busly
+   ```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. **Run Sail to start the development server:**
+   ```bash
+   ./vendor/bin/sail up -d
+   ./vendor/bin/sail shell
+   ```
 
-## Learning Laravel
+3. **Install PHP dependencies:**
+   ```bash
+   composer install
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+4. **Install Node.js dependencies:**
+   ```bash
+   npm install
+   ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+5. **Copy the example environment file and generate an application key:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+5. **Run migrations and sedders:**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-## Laravel Sponsors
+## Packages
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### For Production
 
-### Premium Partners
+**inertiajs/inertia-laravel**  
+Inertia.js lets you quickly build modern single-page React, Vue and Svelte apps using classic server-side routing and controllers.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**tightenco/ziggy**  
+Ziggy provides a JavaScript route() helper function that works like Laravel's, making it easy to use your Laravel named routes in JavaScript.
 
-## Contributing
+**laravel/telescope**  
+Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### For Development
 
-## Code of Conduct
+**Laravel Sail**  
+Laravel Sail is a light-weight command-line interface for interacting with Laravel's default Docker development environment.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Pest**  
+Pest is a testing framework with a focus on simplicity, meticulously designed to bring back the joy of testing in PHP.
 
-## Security Vulnerabilities
+**Larastan**  
+Larastan focuses on finding errors in your code. It catches whole classes of bugs even before you write tests for the code.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Laravel Pint**  
+Laravel Pint is an opinionated PHP code style fixer for minimalists.
+
+**Rector**  
+Rector instantly upgrades and refactors the PHP code of your application.
+
+## Features
+
+- **City Management**: Add and manage cities for bus routes
+- **Bus Fleet Management**: Manage buses with different types and capacities
+- **Trip Scheduling**: Create and manage bus trips between cities
+- **Reservation System**: Allow users to book seats on available trips
+- **User Dashboard**: Users can view their reservations and trip history
+- **Admin Dashboard**: Comprehensive admin panel for managing the entire system
+- **Role-based Access Control**: Separate access levels for users and administrators
+
+## Screenshots
+
+### User Interface
+
+#### Home Page
+The main landing page where users can search for available trips.
+
+![User Home](screenshots/user-home.png)
+
+#### Trip Booking
+Users can view trip details and book their seats with an intuitive booking interface.
+
+![User Booking](screenshots/user-book.png)
+
+#### User Trip Management
+Users can view and manage their booked trips and reservation history.
+
+![User Trips](screenshots/user-trips.png)
+
+### Admin Interface
+
+#### Admin Dashboard
+Comprehensive dashboard providing overview of system statistics and key metrics.
+
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
+#### Trip Management
+Admin interface for managing all trips in the system.
+
+![Admin Trips](screenshots/admin-trips.png)
+
+#### Trip Creation Form
+Detailed form for creating and editing trip information.
+
+![Admin Trip Form](screenshots/admin-trips-form.png)
+
+#### System Alerts
+Admin panel for monitoring system alerts and notifications.
+
+![Admin Alerts](screenshots/admin-alerts.png)
+
+## Testing
+
+To run all tests, use the following command:
+```bash
+composer test
+```
+
+To run specific test suites:
+
+```bash
+# Run PHPStan static analysis
+composer test:types
+
+# Run Pest unit tests
+composer test:unit
+
+# Run Rector tests
+composer test:rector
+
+# Apply Rector changes
+composer rector
+
+# Run code style tests
+composer test:lint
+
+# Fix code style
+composer lint
+
+# Run type coverage tests
+composer test:type-coverage
+```
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License. See the LICENSE file for details.
