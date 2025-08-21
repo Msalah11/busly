@@ -18,6 +18,7 @@ interface TripShowProps {
 export default function TripShow({ trip }: TripShowProps) {
     const { flash } = usePage().props as { flash?: { success?: string; error?: string } };
     const { data, setData, post, processing, errors, reset } = useForm({
+        trip_id: trip.id,
         seats_count: '1',
         total_price: '',
     });
@@ -227,7 +228,6 @@ export default function TripShow({ trip }: TripShowProps) {
                                 </CardHeader>
                                 <CardContent>
                                     <form onSubmit={submit} className="space-y-6">
-                                        <input type="hidden" name="trip_id" value={trip.id} />
                                         
                                         <div className="space-y-2">
                                             <Label htmlFor="seats_count">Number of Seats</Label>

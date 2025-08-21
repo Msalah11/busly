@@ -78,7 +78,6 @@ final class ReservationController extends Controller
         try {
             $reservationData = $request->toDTO();
             $reservation = $action->execute($reservationData, Auth::id());
-
             return redirect()
                 ->route('user.reservations.show', $reservation)
                 ->with('success', sprintf('Reservation %s created successfully!', $reservation->reservation_code));

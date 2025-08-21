@@ -16,8 +16,5 @@ Route::middleware(['auth', 'verified'])->name('user.')->group(function (): void 
     Route::get('/trips/{trip}', [TripController::class, 'show'])->name('trips.show');
 
     // User Reservations
-    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
-    Route::get('/reservations/{reservation}', [ReservationController::class, 'show'])->name('reservations.show');
-    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
-    Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+    Route::resource('reservations', ReservationController::class)->except(['edit', 'update']);
 });

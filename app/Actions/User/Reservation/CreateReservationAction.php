@@ -32,14 +32,9 @@ final class CreateReservationAction
             $trip = (new TripQueryBuilder)
                 ->with('bus')
                 ->active()
-                ->findOrFail($data->tripId)
                 ->build()
-                ->lockForUpdate(); // This prevents race conditions
-
-            // Validate that the trip departure is in the future
-            if ($trip->departure_time <= now()) {
-                throw new ModelNotFoundException('This trip is no longer available for reservation.');
-            }
+                ->lockForUpdate() // This prevents race conditions
+                ->findOrFail($data->tripId);
 
             // Validate seat availability with proper locking
             $this->validateSeatAvailability($trip, $data->seatsCount);
@@ -61,7 +56,7 @@ final class CreateReservationAction
         $reservedSeats = (new ReservationQueryBuilder(['seats_count']))
             ->forTrip($trip->id)
             ->confirmed()
-            ->get()
+            ->build()
             ->sum('seats_count');
 
         $availableSeats = $trip->bus->capacity - $reservedSeats;
