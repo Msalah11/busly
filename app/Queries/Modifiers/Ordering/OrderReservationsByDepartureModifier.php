@@ -40,10 +40,10 @@ final class OrderReservationsByDepartureModifier extends AbstractQueryFilter
     public function apply(Builder $query): Builder
     {
         // Join with trips table if not already joined
-        if (!$this->hasJoin($query, 'trips')) {
+        if (! $this->hasJoin($query, 'trips')) {
             $query->join('trips', 'reservations.trip_id', '=', 'trips.id');
         }
-        
+
         return $query->orderBy('trips.departure_time', $this->direction);
     }
 
@@ -51,19 +51,17 @@ final class OrderReservationsByDepartureModifier extends AbstractQueryFilter
      * Check if the query already has a join with the specified table.
      *
      * @param  Builder<TModel>  $query
-     * @param  string  $table
-     * @return bool
      */
     private function hasJoin(Builder $query, string $table): bool
     {
         $joins = $query->getQuery()->joins ?? [];
-        
+
         foreach ($joins as $join) {
             if ($join->table === $table) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }

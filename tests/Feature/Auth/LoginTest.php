@@ -34,7 +34,7 @@ test('users can authenticate using the login screen', function (): void {
 
     $response->assertSessionHasNoErrors();
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('user.dashboard'));
 });
 
 test('users can authenticate with remember me', function (): void {
@@ -50,7 +50,7 @@ test('users can authenticate with remember me', function (): void {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('user.dashboard'));
     $this->assertNotNull(auth()->user()->remember_token);
 });
 
@@ -148,7 +148,7 @@ test('successful login clears rate limit', function (): void {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('user.dashboard'));
 });
 
 test('users can logout', function (): void {

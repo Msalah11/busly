@@ -32,6 +32,6 @@ class RegisteredUserController extends Controller
 
         $action->execute($registerData);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('user.dashboard', absolute: false));
     }
 }

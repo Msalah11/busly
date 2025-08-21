@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Actions\User\Reservation;
 
 use App\DTOs\User\Reservation\ReservationData;
-use App\Enums\ReservationStatus;
 use App\Exceptions\InsufficientSeatsException;
 use App\Models\Reservation;
 use App\Models\Trip;

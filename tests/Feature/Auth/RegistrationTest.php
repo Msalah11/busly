@@ -25,7 +25,7 @@ test('new users can register', function (): void {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('user.dashboard'));
 
     $user = User::where('email', 'test@example.com')->first();
     expect($user)->not->toBeNull();
@@ -151,7 +151,7 @@ test('email is converted to lowercase', function (): void {
         'password_confirmation' => 'password',
     ]);
 
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('user.dashboard'));
     $this->assertAuthenticated();
 
     $user = User::where('email', 'test@example.com')->first();

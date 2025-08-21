@@ -16,7 +16,7 @@ final class GetUserReservationsAction
     /**
      * Execute the action to get filtered user reservations.
      *
-     * @return LengthAwarePaginator<\App\Models\Reservation>
+     * @return LengthAwarePaginator<int, \App\Models\Reservation>
      */
     public function execute(UserReservationListData $data, int $userId): LengthAwarePaginator
     {
@@ -29,13 +29,13 @@ final class GetUserReservationsAction
             ]);
 
         // Apply filters
-        $query->when($data->status !== null, fn($query) => $query->withStatus($data->status));
-        $query->when($data->startDate !== null && $data->endDate !== null, fn($query) => $query->dateRange($data->startDate, $data->endDate));
-        $query->when($data->upcomingOnly, fn($query) => $query->upcoming());
+        $query->when($data->status instanceof \App\Enums\ReservationStatus, fn ($query) => $query->withStatus($data->status));
+        $query->when($data->startDate !== null && $data->endDate !== null, fn ($query) => $query->dateRange($data->startDate, $data->endDate));
+        $query->when($data->upcomingOnly, fn ($query) => $query->upcoming());
 
         // Apply sorting
-        $query->when($data->sortBy === 'departure_time', fn($query) => $query->orderByDeparture($data->sortDirection));
-        $query->when($data->sortBy !== 'departure_time', fn($query) => $query->orderByCreated($data->sortDirection));
+        $query->when($data->sortBy === 'departure_time', fn ($query) => $query->orderByDeparture($data->sortDirection));
+        $query->when($data->sortBy !== 'departure_time', fn ($query) => $query->orderByCreated($data->sortDirection));
 
         return $query->forUser($userId)->paginate($data->perPage);
     }

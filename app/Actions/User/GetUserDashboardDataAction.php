@@ -68,20 +68,21 @@ final class GetUserDashboardDataAction
             ->get()
             ->map(function ($trip): \App\Models\Trip {
                 $trip->available_seats = $trip->getAvailableSeatsAttribute();
+
                 return $trip;
             });
 
         // Get user reservation statistics using query builder
         $userReservationStats = (new ReservationQueryBuilder)->forUser($userId)->getStatistics();
-        
+
         // Add user-specific additional statistics
         $userReservationStats['upcoming'] = (new ReservationQueryBuilder)->forUser($userId)->upcoming()->confirmed()->get()->count();
         $userReservationStats['completed'] = (new ReservationQueryBuilder)->forUser($userId)->confirmed()
-        ->build()    
-        ->join('trips', 'reservations.trip_id', '=', 'trips.id')
+            ->build()
+            ->join('trips', 'reservations.trip_id', '=', 'trips.id')
             ->where('trips.departure_time', '<', now())
             ->count();
-        
+
         $stats = $userReservationStats;
 
         return [
