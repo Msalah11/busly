@@ -10,7 +10,7 @@ It's recommended to use Laravel Sail to run the application, but you can also ru
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/busly.git
+   git clone https://github.com/Msalah11/busly.git
    cd busly
    ```
 
@@ -44,19 +44,6 @@ It's recommended to use Laravel Sail to run the application, but you can also ru
 
 ## Packages
 
-### For Production
-
-**inertiajs/inertia-laravel**  
-Inertia.js lets you quickly build modern single-page React, Vue and Svelte apps using classic server-side routing and controllers.
-
-**tightenco/ziggy**  
-Ziggy provides a JavaScript route() helper function that works like Laravel's, making it easy to use your Laravel named routes in JavaScript.
-
-**laravel/telescope**  
-Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
-
-### For Development
-
 **Laravel Sail**  
 Laravel Sail is a light-weight command-line interface for interacting with Laravel's default Docker development environment.
 
@@ -71,6 +58,9 @@ Laravel Pint is an opinionated PHP code style fixer for minimalists.
 
 **Rector**  
 Rector instantly upgrades and refactors the PHP code of your application.
+
+**laravel/telescope**  
+Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
 
 ## Features
 
