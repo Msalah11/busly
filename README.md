@@ -1,6 +1,6 @@
 # Busly
 
-This is the backend of the Busly project, a bus reservation application.
+This is the full-stack bus reservation application.
 It was created to help people book bus trips across multiple cities in a more organized and efficient way.
 
 ## Installation
