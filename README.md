@@ -5,9 +5,6 @@ It was created to help people book bus trips across multiple cities in a more or
 
 ## Installation
 
-Busly backend is a Laravel application; it's built on top of Laravel 12 and uses a MySQL database.
-It's recommended to use Laravel Sail to run the application, but you can also run it locally if you have MySQL installed.
-
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Msalah11/busly.git
