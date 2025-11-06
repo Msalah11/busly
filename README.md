@@ -11,13 +11,7 @@ It was created to help people book bus trips across multiple cities in a more or
    cd busly
    ```
 
-2. **Run Sail to start the development server:**
-   ```bash
-   ./vendor/bin/sail up -d
-   ./vendor/bin/sail shell
-   ```
-
-3. **Install PHP dependencies:**
+4. **Install PHP dependencies:**
    ```bash
    composer install
    ```
@@ -40,9 +34,6 @@ It was created to help people book bus trips across multiple cities in a more or
    ```
 
 ## Packages
-
-**Laravel Sail**  
-Laravel Sail is a light-weight command-line interface for interacting with Laravel's default Docker development environment.
 
 **Pest**  
 Pest is a testing framework with a focus on simplicity, meticulously designed to bring back the joy of testing in PHP.
